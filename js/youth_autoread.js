@@ -91,7 +91,7 @@ function AddReadTime() {
     let url = {
       url: `https://ios.baertt.com/v5/user/stay.json`,
       headers: {
-        'User-Agent': 'KDApp/1.7.8 (iPhone; iOS 14.0; Scale/3.00)'
+        'User-Agent': 'KDApp/2.0.2 (iPhone; iOS 14.4; Scale/3.00)'
       },
       body: AddTimeBody,
     };
