@@ -1,8 +1,8 @@
 name: 中青看点
 on:
-  workflow_dispatch:
-  #schedule:
-   # - cron: '0 0-10 * * *'
+  #workflow_dispatch:
+  schedule:
+    - cron: '0 6-23 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest 
