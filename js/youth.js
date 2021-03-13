@@ -299,7 +299,7 @@ function ArticleShare() {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             const url = {
-                url: `https://focu.youth.cn/article/s?signature=0Z3Jgv96wqmVPeM7obRdNpHXgAmRhxNPJ6y4jpGDnANbo8KXQr&uid=46308484&phone_code=26170a068d9b9563e7028f197c8a4a2b&scid=33007686&time=1602937887&app_version=1.7.8&sign=d21dd80d0c6563f6f810dd76d7e0aef2`,
+                url: `https://focus.youth.cn/article/s?signature=LrNmbVzoOlxeyXw4p9o3ArfqN3yQfzpEZol7M8ZkP3BAW9pJqD&uid=51565484&phone_code=269c61b2e58091e8460caede71f06401&scid=36752525&time=1615553636&app_version=2.0.2&sign=0fff708565e8bfb5e31e5e7f1476ebf5`,
                 headers: signheaderVal,
             }
             $.post(url, async(error, response, data) => {
