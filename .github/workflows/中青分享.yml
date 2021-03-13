@@ -1,9 +1,9 @@
 name: 中青分享
 
 on:
-  workflow_dispatch:
-  #schedule:
-   #  - cron: '0 */6 * * *'
+  #workflow_dispatch:
+  schedule:
+     - cron: '0 */6 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest    
