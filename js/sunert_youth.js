@@ -105,7 +105,7 @@ if (isGetCookie = typeof $request !== 'undefined') {
                 timebody = timeArr[i],
                 $.index = i + 1
             };
-            $.log(`\n ********** ${nick}****${articbody}****${timebody} ********\n`);
+            $.log(`\n ********** ${cookie}****${articbody}****${timebody} ********\n`);
             myuid = cookie.match(/uid=\d+/);
             await userInfo();
             nick = nick ? nick : null;
