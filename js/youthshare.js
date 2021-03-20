@@ -47,7 +47,7 @@ let headers = {
 !(async() => {
     let array = articles.concat(articles1);
     for (let i = 0; i < array.length; i++) {
-		encodearticles = encodeURIComponent(encodeURIComponent(articles[i]));
+		encodearticles = encodeURIComponent(encodeURIComponent(array[i]));
         nowTime = new Date().getTime();
         wxck = md5(nowTime);
         $.log(wxck);
