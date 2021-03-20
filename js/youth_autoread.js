@@ -1,12 +1,12 @@
 const $ = new Env("中青看点");
 
-let readbody = require("./youth_readbody");
+let bodys = require("./youth_readbody");
 
 // let bodys = readbody.ArticleBodys + "," + readbody.ArticleBodys1;
-let AddTimeBody = readbody.AddTimeBody;
-let AddTimeBody1 = readbody.AddTimeBody1;
-let YouthBody = readbody.ArticleBodys.split(",");
-let YouthBody1 = readbody.ArticleBodys1.split(",");
+let AddTimeBody = bodys.AddTimeBody;
+let AddTimeBody1 = bodys.AddTimeBody1;
+let YouthBody = bodys.ArticleBodys.split(",");
+let YouthBody1 = bodys.ArticleBodys1.split(",");
 let readbody = [YouthBody,YouthBody1]
 let timebody = [AddTimeBody,AddTimeBody1]
 let ReadArr = [];
