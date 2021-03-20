@@ -18,8 +18,19 @@ let articles = [
 "https://focu.youth.cn/fourhot/20210318?sid=36956332&uid=51565484&timestamp=1616206989&signature=jE9mdZzRG3lxVgkq8na3VddDwH69bG07yJ6vBKw0oObepWDXrM&share_id=51565484369563321616206994428&scene_id=fire_share&time=1616206994&phone_code=269c61b2e58091e8460caede71f06401&app_version=2.0.2.1&sign=b9b03ee5f83ea7b9d89da9dd4fb8efb1",
 "https://focu.youth.cn/fourhot/20210320?sid=36989113&uid=51565484&timestamp=1616206989&signature=l3Q0RNe9oPxVZ6pJMA7E9m9O5hVqWRD7L2XGkOKdvDynjYb5Wz&share_id=51565484369891131616207056167&scene_id=fire_share&time=1616207056&phone_code=269c61b2e58091e8460caede71f06401&app_version=2.0.2.1&sign=c6d6652d38a92fac5f0f27356970d306",
 "https://focu.youth.cn/fourhot/20210318?sid=36933811&uid=51565484&timestamp=1616206989&signature=bNLQGOPvkzKWxBE3gD1MnYdKoTpmM6L4yM2eV8nrowqJXmZjY5&share_id=51565484369338111616207135307&scene_id=fire_share&time=1616207135&phone_code=269c61b2e58091e8460caede71f06401&app_version=2.0.2.1&sign=4873bf8c7e2db5d9a610db8e4b432ff6",
-]
-
+];
+let articles1 = [
+"https://focus.youth.cn/article/s?signature=lbgJRpz0We53NxQ4QqGo5YHDNg2DSxMxmQV4koMEv6nydKPZLD&uid=51584645&phone_code=d3de213d951800fe5a8c82550b690958&scid=36973244&time=1616208590&app_version=2.0.2&sign=695945d7239f561c30a0993ae5507395",
+"https://focus.youth.cn/article/s?signature=gENjGxJw2L6opAMamBlpn0SypO6yuOYObnE1nX3kY58KdmBzRO&uid=51584645&phone_code=d3de213d951800fe5a8c82550b690958&scid=36934972&time=1616208621&app_version=2.0.2&sign=fac45b70aa883fffef5e7b54f42348e9",
+"https://focus.youth.cn/article/s?signature=BzyAgkjdGMQWRVY75N0DPGsqmJnqTvZverKalK9opXE8ZO3mrb&uid=51584645&phone_code=d3de213d951800fe5a8c82550b690958&scid=29406667&time=1616208656&app_version=2.0.2&sign=01790618134ec55032655549096867c1",
+"https://focus.youth.cn/article/s?signature=QB5EzPY3exK9wOd7E9lm6QIVqzxVFgXgbR578oADjvkbgZRGLV&uid=51584645&phone_code=d3de213d951800fe5a8c82550b690958&scid=36874598&time=1616208643&app_version=2.0.2&sign=cd72577f268b5600d9d0b71385d07a35",
+"https://focus.youth.cn/article/s?signature=RpqGjEWYvLyBl2g1lqMqXxUvBGwvcvMvpG84D56Pd3OMonkQx9&uid=51584645&phone_code=d3de213d951800fe5a8c82550b690958&scid=36988479&time=1616208686&app_version=2.0.2&sign=d2e7891376407ce170b06a83cf14ab3a",
+"https://focu.youth.cn/fivehot/20210320?sid=36989070&uid=51584645&timestamp=1616208382&signature=glp5xY6RDENobMmkVO75D3DpJUqmJnq48GPZQwnj20JBreK3Ay&share_id=51584645369890701616208391220&scene_id=fire_share&time=1616208391&phone_code=d3de213d951800fe5a8c82550b690958&app_version=1.7.9.9&sign=8b74e418b53499a933db63afed70f40c",
+"https://focu.youth.cn/fivehot/20210320?sid=36989025&uid=51584645&timestamp=1616208382&signature=Qg9jzmlY6xZnPq3DGO1dB5Bm2CA85LA7XrLEVMWpRd8Neb0JkA&share_id=51584645369890251616208499340&scene_id=fire_share&time=1616208499&phone_code=d3de213d951800fe5a8c82550b690958&app_version=1.7.9.9&sign=e91d3f95946b4e92992df5b6e0d5394b",
+"https://focu.youth.cn/fivehot/20210320?sid=36988973&uid=51584645&timestamp=1616208382&signature=NqylzJV6MGKj23RQPraWwQwQDtyDn6yaEYOAgBndo9ZkDbepv5&share_id=51584645369889731616208513282&scene_id=fire_share&time=1616208514&phone_code=d3de213d951800fe5a8c82550b690958&app_version=1.7.9.9&sign=054f699d081748244f2d14413cf2a9ee",
+"https://focu.youth.cn/fivehot/20210320?sid=36988902&uid=51584645&timestamp=1616208382&signature=b8ne3myXKLv0lpjr2RaBj9j29HVqgvVaxP5OAdZD6NYMBgwzVQ&share_id=51584645369889021616208527525&scene_id=fire_share&time=1616208528&phone_code=d3de213d951800fe5a8c82550b690958&app_version=1.7.9.9&sign=78b50ee25f9b3607527b832447b993df",
+"https://focu.youth.cn/fivehot/20210320?sid=36989738&uid=51584645&timestamp=1616208382&signature=vg9Vr5WAX3dJejlq6GaJJxBLxSgBpDgawoYk2PpNxbRZEDzmnL&share_id=51584645369897381616208553523&scene_id=fire_share&time=1616208554&phone_code=d3de213d951800fe5a8c82550b690958&app_version=1.7.9.9&sign=e6cdcaa68c401e28dfe3bcc3a251df43",
+];
 let encodearticles;
 
 
@@ -34,7 +45,8 @@ let headers = {
 };
 
 !(async() => {
-    for (let i = 0; i < articles.length; i++) {
+    let array = articles.concat(articles1);
+    for (let i = 0; i < array.length; i++) {
 		encodearticles = encodeURIComponent(encodeURIComponent(articles[i]));
         nowTime = new Date().getTime();
         wxck = md5(nowTime);
