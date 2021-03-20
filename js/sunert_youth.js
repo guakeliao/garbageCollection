@@ -98,12 +98,14 @@ if (isGetCookie = typeof $request !== 'undefined') {
             return;
         }
         for (let i = 0; i < cookieArr.length; i++) {
+            $.log(`\n ********** 开始操作001 ********\n`);
             if (cookieArr[i]) {
                 cookie = cookieArr[i],
                 articbody = readArr[i],
                 timebody = timeArr[i],
                 $.index = i + 1
             };
+            $.log(`\n ********** ${nick}****${articbody}****${timebody} ********\n`);
             myuid = cookie.match(/uid=\d+/);
             await userInfo();
             nick = nick ? nick : null;
