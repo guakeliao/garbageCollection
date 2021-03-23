@@ -24,11 +24,12 @@ const fs = require("fs");
       $.msg(
         "",
         "",
-        `账号${n}的中青body数:${youthMap[n].body.length}个\n预计执行${(
+        `账号${youthMap[n].name}的中青body数:${youthMap[n].body.length}个\n预计执行${(
           youthMap[n].body.length / 120
         ).toFixed(2)}个小时`
       );
       $.index = 0;
+      let readscore = 0;
       for (let i = 0; i < youthMap[n].body.length; i++) {
         let read = youthMap[n].body[i]
         if (read) {
@@ -65,7 +66,7 @@ const fs = require("fs");
       $.msg(
         "",
         "",
-        `账号${n}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
+        `账号${youthMap[n].name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
       );
     }
   });
