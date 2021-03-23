@@ -1,91 +1,74 @@
 const $ = new Env("中青看点");
+const fs = require("fs");
 
-const { read } = require("fs");
-let bodys = require("./youth_readbody");
-
-// let bodys = readbody.ArticleBodys + "," + readbody.ArticleBodys1;
-let AddTimeBody = bodys.AddTimeBody;
-let AddTimeBody1 = bodys.AddTimeBody1;
-let YouthBody = bodys.ArticleBodys.split(",");
-let YouthBody1 = bodys.ArticleBodys1.split(",");
-let readbody = [YouthBody, YouthBody1]
-let timebody = [AddTimeBody, AddTimeBody1]
 //多个账号
 !(async () => {
-  for (let n = 0; n < readbody.length; n++) {
-    let ReadArr = [];
-    let readscore = 0;
-    Object.keys(readbody[n]).forEach((item) => {
-      if (readbody[n][item]) {
-        ReadArr.push(readbody[n][item]);
-      }
-    });
-    let indexLast = 0; //$.getdata('zqgetbody_body_index');
-    $.begin = indexLast ? parseInt(indexLast, 10) : 1;
-    console.log(
-      `============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`
-    );
-    console.log(
-      `============ 脚本执行-北京时间(UTC+8)：${new Date(
-        new Date().getTime() + 8 * 60 * 60 * 1000
-      ).toLocaleString()}  =============`
-    );
-    if (!ReadArr[0]) {
+  fs.readFile("./youth_timeRead.json", "utf-8", (err, datas) => {
+    if (err) {
+      console.log("解析错误,请检查文件格式");
+      throw err;
+    }
+    let youthMap = JSON.parse(datas);
+    for (let n = 0; n < youthMap.length; n++) {
+      $.begin = 0;
       console.log(
-        $.name,
-        "【提示】请把抓包的请求体填入Github 的 Secrets 中，请以,隔开"
+        `============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`
       );
-      return;
-    }
-    $.msg(
-      "",
-      "",
-      `中青body数:${ReadArr.length}个\n上次执行到第${$.begin}个\n预计执行${(
-        (ReadArr.length - $.begin) /
-        120
-      ).toFixed(2)}个小时`
-    );
-    $.index = 0;
-    for (let i = indexLast ? indexLast : 0; i < ReadArr.length; i++) {
-      if (ReadArr[i]) {
-        $.index = $.index + 1;
-        console.log(`\n开始中青看点第${$.index}次阅读`);
-      }
-      let data = await myAutoRead(ReadArr[i]);
-      let readres = JSON.parse(data);
-      $.begin = $.begin + 1;
-      if (
-        readres.error_code == "0" &&
-        typeof readres.items.read_score === "number"
-      ) {
+      if (!youthMap[n].body[0]) {
         console.log(
-          `本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`
+          $.name,
+          "【提示】请把抓包的请求体填入youth_timeRead.json中"
         );
-        readscore += readres.items.read_score;
-        if (readres.items.read_score > 5) {
-          await myAddReadTime(timebody[n]);
-          await $.wait(30000);
+        return;
+      }
+      $.msg(
+        "",
+        "",
+        `账号${n}的中青body数:${youthMap[n].body.length}个\n预计执行${(
+          youthMap[n].body.length / 120
+        ).toFixed(2)}个小时`
+      );
+      $.index = 0;
+      for (let i = 0; i < youthMap[n].body.length; i++) {
+        let read = youthMap[n].body[i]
+        if (read) {
+          $.index = $.index + 1;
+          console.log(`\n开始中青看点第${$.index}次阅读`);
         }
-      } else if (
-        readres.error_code == "0" &&
-        typeof readres.items.score === "number"
-      ) {
-        console.log(
-          `本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`
-        );
-        readscore += readres.items.score;
-        await $.wait(30000);
-      } else {
-        console.log(`第${$.index}次阅读请求失败`);
+        let data = await myAutoRead(read);
+        let readres = JSON.parse(data);
+        $.begin = $.begin + 1;
+        if (
+          readres.error_code == "0" &&
+          typeof readres.items.read_score === "number"
+        ) {
+          console.log(
+            `本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`
+          );
+          readscore += readres.items.read_score;
+          if (readres.items.read_score > 5) {
+            await myAddReadTime(youthMap[n].time[n]);
+          }
+        } else if (
+          readres.error_code == "0" &&
+          typeof readres.items.score === "number"
+        ) {
+          console.log(
+            `本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`
+          );
+          readscore += readres.items.score;
+        } else {
+          console.log(`第${$.index}次阅读请求失败`);
+        }
         await $.wait(30000);
       }
+      $.msg(
+        "",
+        "",
+        `账号${n}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
+      );
     }
-    $.msg(
-      "",
-      "",
-      `中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
-    );
-  }
+  });
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done());
@@ -120,68 +103,6 @@ function myAddReadTime(addtimebody) {
     });
   });
 }
-function AutoRead(articlebody, addtimebody) {
-  return new Promise((resolve, reject) => {
-    let url = {
-      url: `https://ios.baertt.com/v5/article/complete.json`,
-      headers: {
-        "User-Agent": "KDApp/1.7.8 (iPhone; iOS 14.0; Scale/3.00)",
-      },
-      body: articlebody,
-    };
-    $.post(url, async (error, response, data) => {
-      $.begin = $.begin + 1;
-      let res = $.begin % ReadArr.length;
-      $.setdata(res + "", "zqgetbody_body_index");
-      let readres = JSON.parse(data);
-      if (
-        readres.error_code == "0" &&
-        typeof readres.items.read_score === "number"
-      ) {
-        console.log(
-          `本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`
-        );
-        readscore += readres.items.read_score;
-        if (readres.items.read_score > 5) {
-          await AddReadTime(addtimebody);
-          await $.wait(30000);
-        }
-      } else if (
-        readres.error_code == "0" &&
-        typeof readres.items.score === "number"
-      ) {
-        console.log(
-          `本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`
-        );
-        readscore += readres.items.score;
-        await $.wait(30000);
-      } else {
-        console.log(`第${$.index}次阅读请求失败`);
-        await $.wait(30000);
-      }
-
-      resolve();
-    });
-  });
-}
-
-function AddReadTime(addtimebody) {
-  return new Promise((resolve, reject) => {
-    let url = {
-      url: `https://ios.baertt.com/v5/user/stay.json`,
-      headers: {
-        "User-Agent": "KDApp/2.0.2 (iPhone; iOS 14.4; Scale/3.00)",
-      },
-      body: addtimebody,
-    };
-    $.post(url, async (error, response, data) => {
-      let result = JSON.parse(data);
-      console.log(result.message);
-      resolve();
-    });
-  });
-}
-
 function Env(t, e) {
   class s {
     constructor(t) {
@@ -252,7 +173,7 @@ function Env(t, e) {
       if (i)
         try {
           s = JSON.parse(this.getdata(t));
-        } catch { }
+        } catch {}
       return s;
     }
     setjson(t, e) {
@@ -314,8 +235,8 @@ function Env(t, e) {
         s
           ? this.fs.writeFileSync(t, r)
           : i
-            ? this.fs.writeFileSync(e, r)
-            : this.fs.writeFileSync(t, r);
+          ? this.fs.writeFileSync(e, r)
+          : this.fs.writeFileSync(t, r);
       }
     }
     lodash_get(t, e, s) {
@@ -374,106 +295,106 @@ function Env(t, e) {
       return this.isSurge() || this.isLoon()
         ? $persistentStore.read(t)
         : this.isQuanX()
-          ? $prefs.valueForKey(t)
-          : this.isNode()
-            ? ((this.data = this.loaddata()), this.data[t])
-            : (this.data && this.data[t]) || null;
+        ? $prefs.valueForKey(t)
+        : this.isNode()
+        ? ((this.data = this.loaddata()), this.data[t])
+        : (this.data && this.data[t]) || null;
     }
     setval(t, e) {
       return this.isSurge() || this.isLoon()
         ? $persistentStore.write(t, e)
         : this.isQuanX()
-          ? $prefs.setValueForKey(t, e)
-          : this.isNode()
-            ? ((this.data = this.loaddata()),
-              (this.data[e] = t),
-              this.writedata(),
-              !0)
-            : (this.data && this.data[e]) || null;
+        ? $prefs.setValueForKey(t, e)
+        : this.isNode()
+        ? ((this.data = this.loaddata()),
+          (this.data[e] = t),
+          this.writedata(),
+          !0)
+        : (this.data && this.data[e]) || null;
     }
     initGotEnv(t) {
       (this.got = this.got ? this.got : require("got")),
         (this.cktough = this.cktough ? this.cktough : require("tough-cookie")),
         (this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar()),
         t &&
-        ((t.headers = t.headers ? t.headers : {}),
+          ((t.headers = t.headers ? t.headers : {}),
           void 0 === t.headers.Cookie &&
-          void 0 === t.cookieJar &&
-          (t.cookieJar = this.ckjar));
+            void 0 === t.cookieJar &&
+            (t.cookieJar = this.ckjar));
     }
-    get(t, e = () => { }) {
+    get(t, e = () => {}) {
       t.headers &&
         (delete t.headers["Content-Type"], delete t.headers["Content-Length"]),
         this.isSurge() || this.isLoon()
           ? (this.isSurge() &&
-            this.isNeedRewrite &&
-            ((t.headers = t.headers || {}),
+              this.isNeedRewrite &&
+              ((t.headers = t.headers || {}),
               Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })),
             $httpClient.get(t, (t, s, i) => {
               !t && s && ((s.body = i), (s.statusCode = s.status)), e(t, s, i);
             }))
           : this.isQuanX()
-            ? (this.isNeedRewrite &&
+          ? (this.isNeedRewrite &&
               ((t.opts = t.opts || {}), Object.assign(t.opts, { hints: !1 })),
-              $task.fetch(t).then(
+            $task.fetch(t).then(
+              (t) => {
+                const { statusCode: s, statusCode: i, headers: r, body: o } = t;
+                e(null, { status: s, statusCode: i, headers: r, body: o }, o);
+              },
+              (t) => e(t)
+            ))
+          : this.isNode() &&
+            (this.initGotEnv(t),
+            this.got(t)
+              .on("redirect", (t, e) => {
+                try {
+                  if (t.headers["set-cookie"]) {
+                    const s = t.headers["set-cookie"]
+                      .map(this.cktough.Cookie.parse)
+                      .toString();
+                    this.ckjar.setCookieSync(s, null),
+                      (e.cookieJar = this.ckjar);
+                  }
+                } catch (t) {
+                  this.logErr(t);
+                }
+              })
+              .then(
                 (t) => {
-                  const { statusCode: s, statusCode: i, headers: r, body: o } = t;
+                  const {
+                    statusCode: s,
+                    statusCode: i,
+                    headers: r,
+                    body: o,
+                  } = t;
                   e(null, { status: s, statusCode: i, headers: r, body: o }, o);
                 },
-                (t) => e(t)
-              ))
-            : this.isNode() &&
-            (this.initGotEnv(t),
-              this.got(t)
-                .on("redirect", (t, e) => {
-                  try {
-                    if (t.headers["set-cookie"]) {
-                      const s = t.headers["set-cookie"]
-                        .map(this.cktough.Cookie.parse)
-                        .toString();
-                      this.ckjar.setCookieSync(s, null),
-                        (e.cookieJar = this.ckjar);
-                    }
-                  } catch (t) {
-                    this.logErr(t);
-                  }
-                })
-                .then(
-                  (t) => {
-                    const {
-                      statusCode: s,
-                      statusCode: i,
-                      headers: r,
-                      body: o,
-                    } = t;
-                    e(null, { status: s, statusCode: i, headers: r, body: o }, o);
-                  },
-                  (t) => {
-                    const { message: s, response: i } = t;
-                    e(s, i, i && i.body);
-                  }
-                ));
+                (t) => {
+                  const { message: s, response: i } = t;
+                  e(s, i, i && i.body);
+                }
+              ));
     }
-    post(t, e = () => { }) {
+    post(t, e = () => {}) {
       if (
         (t.body &&
           t.headers &&
           !t.headers["Content-Type"] &&
           (t.headers["Content-Type"] = "application/x-www-form-urlencoded"),
-          t.headers && delete t.headers["Content-Length"],
-          this.isSurge() || this.isLoon())
+        t.headers && delete t.headers["Content-Length"],
+        this.isSurge() || this.isLoon())
       )
         this.isSurge() &&
           this.isNeedRewrite &&
           ((t.headers = t.headers || {}),
-            Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })),
+          Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })),
           $httpClient.post(t, (t, s, i) => {
             !t && s && ((s.body = i), (s.statusCode = s.status)), e(t, s, i);
           });
       else if (this.isQuanX())
         (t.method = "POST"),
           this.isNeedRewrite &&
-          ((t.opts = t.opts || {}), Object.assign(t.opts, { hints: !1 })),
+            ((t.opts = t.opts || {}), Object.assign(t.opts, { hints: !1 })),
           $task.fetch(t).then(
             (t) => {
               const { statusCode: s, statusCode: i, headers: r, body: o } = t;
@@ -528,10 +449,10 @@ function Env(t, e) {
           return this.isLoon()
             ? t
             : this.isQuanX()
-              ? { "open-url": t }
-              : this.isSurge()
-                ? { url: t }
-                : void 0;
+            ? { "open-url": t }
+            : this.isSurge()
+            ? { url: t }
+            : void 0;
         if ("object" == typeof t) {
           if (this.isLoon()) {
             let e = t.openUrl || t.url || t["open-url"],
