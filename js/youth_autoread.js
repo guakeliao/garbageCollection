@@ -3,11 +3,8 @@ const fs = require("fs");
 
 //多个账号
 !(async () => {
-  fs.readFile(__dirname + "/youth_timeRead.json", "utf-8", async (err, datas) => {
-    if (err) {
-      console.log("解析错误,请检查文件格式");
-      throw err;
-    }
+  try {
+    let datas = fs.readFileSync(__dirname + "/youth_timeRead.json", "utf-8")  
     let youthMap = JSON.parse(datas);
     for (let n = 0; n < youthMap.length; n++) {
       let name = youthMap[n].name
@@ -70,7 +67,11 @@ const fs = require("fs");
         `账号${name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
       );
     }
-  });
+  } catch (error) {
+    console.log("解析错误,请检查文件格式");
+    console.log(error)
+    throw error;
+  }
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done());
