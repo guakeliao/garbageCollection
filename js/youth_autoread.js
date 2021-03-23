@@ -3,18 +3,21 @@ const fs = require("fs");
 
 //多个账号
 !(async () => {
-  fs.readFile("./youth_timeRead.json", "utf-8", (err, datas) => {
+  fs.readFile("./youth_timeRead.json", "utf-8", async (err, datas) => {
     if (err) {
       console.log("解析错误,请检查文件格式");
       throw err;
     }
     let youthMap = JSON.parse(datas);
     for (let n = 0; n < youthMap.length; n++) {
-      $.begin = 0;
+      let name = youthMap[n].name
+      let time = youthMap[n].time
+      let bodys = youthMap[n].bodys
       console.log(
         `============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`
-      );
-      if (!youthMap[n].body[0]) {
+      );      
+      $.begin = 0;
+      if (!bodys[0]) {
         console.log(
           $.name,
           "【提示】请把抓包的请求体填入youth_timeRead.json中"
@@ -24,14 +27,12 @@ const fs = require("fs");
       $.msg(
         "",
         "",
-        `账号${youthMap[n].name}的中青body数:${youthMap[n].body.length}个\n预计执行${(
-          youthMap[n].body.length / 120
-        ).toFixed(2)}个小时`
+        `账号${name}的中青body数:${bodys.length}个\n预计执行${(bodys.length / 120).toFixed(2)}个小时`
       );
       $.index = 0;
       let readscore = 0;
-      for (let i = 0; i < youthMap[n].body.length; i++) {
-        let read = youthMap[n].body[i]
+      for (let i = 0; i < bodys.length; i++) {
+        let read = bodys[i];
         if (read) {
           $.index = $.index + 1;
           console.log(`\n开始中青看点第${$.index}次阅读`);
@@ -48,7 +49,7 @@ const fs = require("fs");
           );
           readscore += readres.items.read_score;
           if (readres.items.read_score > 5) {
-            await myAddReadTime(youthMap[n].time[n]);
+            await myAddReadTime(time);
           }
         } else if (
           readres.error_code == "0" &&
@@ -66,7 +67,7 @@ const fs = require("fs");
       $.msg(
         "",
         "",
-        `账号${youthMap[n].name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
+        `账号${name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
       );
     }
   });
@@ -75,7 +76,7 @@ const fs = require("fs");
   .finally(() => $.done());
 
 //使用promise串联取来
-async function myAutoRead(articlebody) {
+function myAutoRead(articlebody) {
   return new Promise((resolve, reject) => {
     let url = {
       url: `https://ios.baertt.com/v5/article/complete.json`,
@@ -89,7 +90,7 @@ async function myAutoRead(articlebody) {
     });
   });
 }
-async function myAddReadTime(addtimebody) {
+function myAddReadTime(addtimebody) {
   return new Promise((resolve, reject) => {
     let url = {
       url: `https://ios.baertt.com/v5/user/stay.json`,
