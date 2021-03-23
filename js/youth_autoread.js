@@ -1,76 +1,67 @@
 const $ = new Env("中青看点");
 const fs = require("fs");
-
+const youthMap = require("./youth_timeread.json");
 //多个账号
 !(async () => {
-  try {
-    let datas = fs.readFileSync(__dirname + "/youth_timeRead.json", "utf-8")  
-    let youthMap = JSON.parse(datas);
-    for (let n = 0; n < youthMap.length; n++) {
-      let name = youthMap[n].name
-      let time = youthMap[n].time
-      let bodys = youthMap[n].bodys
-      console.log(
-        `============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`
-      );      
-      $.begin = 0;
-      if (!bodys[0]) {
-        console.log(
-          $.name,
-          "【提示】请把抓包的请求体填入youth_timeRead.json中"
-        );
-        return;
-      }
-      $.msg(
-        "",
-        "",
-        `账号${name}的中青body数:${bodys.length}个\n预计执行${(bodys.length / 120).toFixed(2)}个小时`
-      );
-      $.index = 0;
-      let readscore = 0;
-      for (let i = 0; i < bodys.length; i++) {
-        let read = bodys[i];
-        if (read) {
-          $.index = $.index + 1;
-          console.log(`\n开始中青看点第${$.index}次阅读`);
-        }
-        let data = await myAutoRead(read);
-        let readres = JSON.parse(data);
-        $.begin = $.begin + 1;
-        if (
-          readres.error_code == "0" &&
-          typeof readres.items.read_score === "number"
-        ) {
-          console.log(
-            `本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`
-          );
-          readscore += readres.items.read_score;
-          if (readres.items.read_score > 5) {
-            await myAddReadTime(time);
-          }
-        } else if (
-          readres.error_code == "0" &&
-          typeof readres.items.score === "number"
-        ) {
-          console.log(
-            `本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`
-          );
-          readscore += readres.items.score;
-        } else {
-          console.log(`第${$.index}次阅读请求失败`);
-        }
-        await $.wait(30000);
-      }
-      $.msg(
-        "",
-        "",
-        `账号${name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
-      );
+  for (let n = 0; n < youthMap.length; n++) {
+    let name = youthMap[n].name;
+    let time = youthMap[n].time;
+    let bodys = youthMap[n].bodys;
+    console.log(
+      `============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`
+    );
+    $.begin = 0;
+    if (!bodys[0]) {
+      console.log($.name, "【提示】请把抓包的请求体填入youth_timeRead.json中");
+      return;
     }
-  } catch (error) {
-    console.log("解析错误,请检查文件格式");
-    console.log(error)
-    throw error;
+    $.msg(
+      "",
+      "",
+      `账号${name}的中青body数:${bodys.length}个\n预计执行${(
+        bodys.length / 120
+      ).toFixed(2)}个小时`
+    );
+    $.index = 0;
+    let readscore = 0;
+    for (let i = 0; i < bodys.length; i++) {
+      let read = bodys[i];
+      if (read) {
+        $.index = $.index + 1;
+        console.log(`\n开始中青看点第${$.index}次阅读`);
+      }
+      let data = await myAutoRead(read);
+      let readres = JSON.parse(data);
+      $.begin = $.begin + 1;
+      if (
+        readres.error_code == "0" &&
+        typeof readres.items.read_score === "number"
+      ) {
+        console.log(
+          `本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`
+        );
+        readscore += readres.items.read_score;
+        if (readres.items.read_score > 5) {
+          await myAddReadTime(time);
+        }
+      } else if (
+        readres.error_code == "0" &&
+        typeof readres.items.score === "number"
+      ) {
+        console.log(
+          `本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`
+        );
+        readscore += readres.items.score;
+      } else {
+        console.log(`第${$.index}次阅读请求失败`);
+      }
+      await $.wait(30000);
+    }
+    $.msg(
+      "",
+      "",
+      `账号${name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
+    );
   }
 })()
   .catch((e) => $.logErr(e))
