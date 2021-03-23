@@ -75,7 +75,7 @@ const fs = require("fs");
   .finally(() => $.done());
 
 //使用promise串联取来
-function myAutoRead(articlebody) {
+async function myAutoRead(articlebody) {
   return new Promise((resolve, reject) => {
     let url = {
       url: `https://ios.baertt.com/v5/article/complete.json`,
@@ -89,7 +89,7 @@ function myAutoRead(articlebody) {
     });
   });
 }
-function myAddReadTime(addtimebody) {
+async function myAddReadTime(addtimebody) {
   return new Promise((resolve, reject) => {
     let url = {
       url: `https://ios.baertt.com/v5/user/stay.json`,
