@@ -3,7 +3,7 @@ const fs = require("fs");
 
 //多个账号
 !(async () => {
-  fs.readFile("./youth_timeRead.json", "utf-8", async (err, datas) => {
+  fs.readFile(__dirname + "/youth_timeRead.json", "utf-8", async (err, datas) => {
     if (err) {
       console.log("解析错误,请检查文件格式");
       throw err;
