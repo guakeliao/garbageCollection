@@ -8,7 +8,7 @@ const youthMap = require("./youth_timeread.json");
     let name = youthMap[n].name;
     let time = youthMap[n].time;
     let bodys = youthMap[n].bodys;
-    allPromise.push(startWork(name,time,bodys))
+    allPromise.push(startWork(name, time, bodys))
   }
   Promise.all(allPromise).then(res => {
     let newArr = res.reduce((pre, cur) => {
@@ -24,8 +24,8 @@ const youthMap = require("./youth_timeread.json");
   .catch((e) => $.logErr(e))
   .finally(() => $.done());
 
-async function startWork(name,time,bodys){
-  return  new Promise((resolve, reject) => {
+async function startWork(name, time, bodys) {
+  return new Promise((resolve, reject) => {
     let index = 0;
     let readscore = 0;
     let msgs = [];
