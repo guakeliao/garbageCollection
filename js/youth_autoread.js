@@ -29,7 +29,6 @@ const youthMap = require("./youth_timeread.json");
       });
     })
     .finally(() => {
-      console.log("阅读完成");
     });
 })()
   .catch((e) => $.logErr(e))
@@ -46,7 +45,7 @@ async function startWork(name, time, bodys) {
     resolve(msgs);
   }
   msgs.push(
-    `账号${name}的中青body数:${bodys.length}个\n预计执行${(
+    `============ 账号${name}的中青body数:${bodys.length}个 ============\n预计执行${(
       bodys.length / 120
     ).toFixed(2)}个小时`
   );
@@ -81,7 +80,7 @@ async function startWork(name, time, bodys) {
     await $.wait(30000);
   }
   msgs.push(
-    `账号${name}的中青看点共完成${index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
+    `============ 账号${name}的中青看点共完成${index}次阅读,共计获得${readscore}个青豆，阅读请求全部结束 ============`
   );
   return Promise.resolve(msgs)
 }
