@@ -90,7 +90,7 @@ function myAutoRead(articlebody) {
       },
       body: articlebody,
     };
-    $.post(url, async (error, response, data) => {
+    $.post(url, (error, response, data) => {
       resolve(data);
     });
   });
@@ -104,7 +104,7 @@ function myAddReadTime(addtimebody) {
       },
       body: addtimebody,
     };
-    $.post(url, async (error, response, data) => {
+    $.post(url, (error, response, data) => {
       let result = JSON.parse(data);
       resolve();
     });
