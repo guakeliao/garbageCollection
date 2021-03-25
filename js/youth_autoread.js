@@ -3,6 +3,15 @@ const fs = require("fs");
 const youthMap = require("./youth_timeread.json");
 //多个账号
 !(async () => {
+  let maxLength = youthMap.reduce((pre, cur) => {
+    if (pre >= cur.bodys.length) {
+      return pre
+    } else {
+      return cur.bodys.length
+    }
+  }, 0)
+  console.log(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`);
+  console.log(`预计执行${(maxLength / 120).toFixed(2)}个小时,执行完后才会输出日志`)
   let allPromise = [];
   for (let n = 0; n < youthMap.length; n++) {
     let name = youthMap[n].name;
@@ -30,9 +39,6 @@ async function startWork(name, time, bodys) {
   let index = 0;
   let readscore = 0;
   let msgs = [];
-  msgs.push(
-    `============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`
-  );
   if (!bodys[0]) {
     msgs.push(
       `============【提示】 ${name}:请把抓包的请求体填入youth_timeRead.json中  =============`
