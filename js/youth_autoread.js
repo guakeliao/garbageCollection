@@ -3,66 +3,68 @@ const fs = require("fs");
 const youthMap = require("./youth_timeread.json");
 //多个账号
 !(async () => {
+  let allPromise = [];
   for (let n = 0; n < youthMap.length; n++) {
-    let name = youthMap[n].name;
-    let time = youthMap[n].time;
-    let bodys = youthMap[n].bodys;
-    console.log(
-      `============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`
-    );
-    $.begin = 0;
-    if (!bodys[0]) {
-      console.log($.name, "【提示】请把抓包的请求体填入youth_timeRead.json中");
-      return;
-    }
-    $.msg(
-      "",
-      "",
-      `账号${name}的中青body数:${bodys.length}个\n预计执行${(
+    const subPromise = new Promise((resolve, reject) => {
+      let msgs = [];
+      let name = youthMap[n].name;
+      let time = youthMap[n].time;
+      let bodys = youthMap[n].bodys;
+      msgs.push(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`)
+      $.begin = 0;
+      if (!bodys[0]) {
+        msgs.push(`============【提示】 ${$.name}:请把抓包的请求体填入youth_timeRead.json中  =============`)
+        resolve(msgs);
+      }
+      msgs.push(`账号${name}的中青body数:${bodys.length}个\n预计执行${(
         bodys.length / 120
-      ).toFixed(2)}个小时`
-    );
-    $.index = 0;
-    let readscore = 0;
-    for (let i = 0; i < bodys.length; i++) {
-      let read = bodys[i];
-      if (read) {
-        $.index = $.index + 1;
-        console.log(`\n开始中青看点第${$.index}次阅读`);
-      }
-      let data = await myAutoRead(read);
-      let readres = JSON.parse(data);
-      $.begin = $.begin + 1;
-      if (
-        readres.error_code == "0" &&
-        typeof readres.items.read_score === "number"
-      ) {
-        console.log(
-          `本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`
-        );
-        readscore += readres.items.read_score;
-        if (readres.items.read_score > 5) {
-          await myAddReadTime(time);
+      ).toFixed(2)}个小时`)
+      $.index = 0;
+      let readscore = 0;
+      for (let i = 0; i < bodys.length; i++) {
+        let read = bodys[i];
+        if (read) {
+          $.index = $.index + 1;
+          msgs.push(`\n开始中青看点第${$.index}次阅读`)
         }
-      } else if (
-        readres.error_code == "0" &&
-        typeof readres.items.score === "number"
-      ) {
-        console.log(
-          `本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`
-        );
-        readscore += readres.items.score;
-      } else {
-        console.log(`第${$.index}次阅读请求失败`);
+        let data = await myAutoRead(read);
+        let readres = JSON.parse(data);
+        $.begin = $.begin + 1;
+        if (
+          readres.error_code == "0" &&
+          typeof readres.items.read_score === "number"
+        ) {
+          msgs.push(`本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`)
+          readscore += readres.items.read_score;
+          if (readres.items.read_score > 5) {
+            await myAddReadTime(time);
+          }
+        } else if (
+          readres.error_code == "0" &&
+          typeof readres.items.score === "number"
+        ) {
+          msgs.push(`本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`)
+          readscore += readres.items.score;
+        } else {
+          msgs.push(`第${$.index}次阅读请求失败`)
+        }
+        await $.wait(30000);
       }
-      await $.wait(30000);
-    }
-    $.msg(
-      "",
-      "",
-      `账号${name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`
-    );
+      msgs.push(`账号${name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`)
+      resolve(msgs)
+    })
+    allPromise.push(subPromise);
   }
+  Promise.all(allPromise).then(res => {
+    let newArr = res.reduce((pre, cur) => {
+      return pre.concat(cur)
+    }, [])
+    newArr.forEach(msg => {
+      console.log(msg)
+    });
+  }).finally(() => {
+    console.log('阅读完成')
+  })
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done());
@@ -167,7 +169,7 @@ function Env(t, e) {
       if (i)
         try {
           s = JSON.parse(this.getdata(t));
-        } catch {}
+        } catch { }
       return s;
     }
     setjson(t, e) {
@@ -229,8 +231,8 @@ function Env(t, e) {
         s
           ? this.fs.writeFileSync(t, r)
           : i
-          ? this.fs.writeFileSync(e, r)
-          : this.fs.writeFileSync(t, r);
+            ? this.fs.writeFileSync(e, r)
+            : this.fs.writeFileSync(t, r);
       }
     }
     lodash_get(t, e, s) {
@@ -289,106 +291,106 @@ function Env(t, e) {
       return this.isSurge() || this.isLoon()
         ? $persistentStore.read(t)
         : this.isQuanX()
-        ? $prefs.valueForKey(t)
-        : this.isNode()
-        ? ((this.data = this.loaddata()), this.data[t])
-        : (this.data && this.data[t]) || null;
+          ? $prefs.valueForKey(t)
+          : this.isNode()
+            ? ((this.data = this.loaddata()), this.data[t])
+            : (this.data && this.data[t]) || null;
     }
     setval(t, e) {
       return this.isSurge() || this.isLoon()
         ? $persistentStore.write(t, e)
         : this.isQuanX()
-        ? $prefs.setValueForKey(t, e)
-        : this.isNode()
-        ? ((this.data = this.loaddata()),
-          (this.data[e] = t),
-          this.writedata(),
-          !0)
-        : (this.data && this.data[e]) || null;
+          ? $prefs.setValueForKey(t, e)
+          : this.isNode()
+            ? ((this.data = this.loaddata()),
+              (this.data[e] = t),
+              this.writedata(),
+              !0)
+            : (this.data && this.data[e]) || null;
     }
     initGotEnv(t) {
       (this.got = this.got ? this.got : require("got")),
         (this.cktough = this.cktough ? this.cktough : require("tough-cookie")),
         (this.ckjar = this.ckjar ? this.ckjar : new this.cktough.CookieJar()),
         t &&
-          ((t.headers = t.headers ? t.headers : {}),
+        ((t.headers = t.headers ? t.headers : {}),
           void 0 === t.headers.Cookie &&
-            void 0 === t.cookieJar &&
-            (t.cookieJar = this.ckjar));
+          void 0 === t.cookieJar &&
+          (t.cookieJar = this.ckjar));
     }
-    get(t, e = () => {}) {
+    get(t, e = () => { }) {
       t.headers &&
         (delete t.headers["Content-Type"], delete t.headers["Content-Length"]),
         this.isSurge() || this.isLoon()
           ? (this.isSurge() &&
-              this.isNeedRewrite &&
-              ((t.headers = t.headers || {}),
+            this.isNeedRewrite &&
+            ((t.headers = t.headers || {}),
               Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })),
             $httpClient.get(t, (t, s, i) => {
               !t && s && ((s.body = i), (s.statusCode = s.status)), e(t, s, i);
             }))
           : this.isQuanX()
-          ? (this.isNeedRewrite &&
+            ? (this.isNeedRewrite &&
               ((t.opts = t.opts || {}), Object.assign(t.opts, { hints: !1 })),
-            $task.fetch(t).then(
-              (t) => {
-                const { statusCode: s, statusCode: i, headers: r, body: o } = t;
-                e(null, { status: s, statusCode: i, headers: r, body: o }, o);
-              },
-              (t) => e(t)
-            ))
-          : this.isNode() &&
-            (this.initGotEnv(t),
-            this.got(t)
-              .on("redirect", (t, e) => {
-                try {
-                  if (t.headers["set-cookie"]) {
-                    const s = t.headers["set-cookie"]
-                      .map(this.cktough.Cookie.parse)
-                      .toString();
-                    this.ckjar.setCookieSync(s, null),
-                      (e.cookieJar = this.ckjar);
-                  }
-                } catch (t) {
-                  this.logErr(t);
-                }
-              })
-              .then(
+              $task.fetch(t).then(
                 (t) => {
-                  const {
-                    statusCode: s,
-                    statusCode: i,
-                    headers: r,
-                    body: o,
-                  } = t;
+                  const { statusCode: s, statusCode: i, headers: r, body: o } = t;
                   e(null, { status: s, statusCode: i, headers: r, body: o }, o);
                 },
-                (t) => {
-                  const { message: s, response: i } = t;
-                  e(s, i, i && i.body);
-                }
-              ));
+                (t) => e(t)
+              ))
+            : this.isNode() &&
+            (this.initGotEnv(t),
+              this.got(t)
+                .on("redirect", (t, e) => {
+                  try {
+                    if (t.headers["set-cookie"]) {
+                      const s = t.headers["set-cookie"]
+                        .map(this.cktough.Cookie.parse)
+                        .toString();
+                      this.ckjar.setCookieSync(s, null),
+                        (e.cookieJar = this.ckjar);
+                    }
+                  } catch (t) {
+                    this.logErr(t);
+                  }
+                })
+                .then(
+                  (t) => {
+                    const {
+                      statusCode: s,
+                      statusCode: i,
+                      headers: r,
+                      body: o,
+                    } = t;
+                    e(null, { status: s, statusCode: i, headers: r, body: o }, o);
+                  },
+                  (t) => {
+                    const { message: s, response: i } = t;
+                    e(s, i, i && i.body);
+                  }
+                ));
     }
-    post(t, e = () => {}) {
+    post(t, e = () => { }) {
       if (
         (t.body &&
           t.headers &&
           !t.headers["Content-Type"] &&
           (t.headers["Content-Type"] = "application/x-www-form-urlencoded"),
-        t.headers && delete t.headers["Content-Length"],
-        this.isSurge() || this.isLoon())
+          t.headers && delete t.headers["Content-Length"],
+          this.isSurge() || this.isLoon())
       )
         this.isSurge() &&
           this.isNeedRewrite &&
           ((t.headers = t.headers || {}),
-          Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })),
+            Object.assign(t.headers, { "X-Surge-Skip-Scripting": !1 })),
           $httpClient.post(t, (t, s, i) => {
             !t && s && ((s.body = i), (s.statusCode = s.status)), e(t, s, i);
           });
       else if (this.isQuanX())
         (t.method = "POST"),
           this.isNeedRewrite &&
-            ((t.opts = t.opts || {}), Object.assign(t.opts, { hints: !1 })),
+          ((t.opts = t.opts || {}), Object.assign(t.opts, { hints: !1 })),
           $task.fetch(t).then(
             (t) => {
               const { statusCode: s, statusCode: i, headers: r, body: o } = t;
@@ -443,10 +445,10 @@ function Env(t, e) {
           return this.isLoon()
             ? t
             : this.isQuanX()
-            ? { "open-url": t }
-            : this.isSurge()
-            ? { url: t }
-            : void 0;
+              ? { "open-url": t }
+              : this.isSurge()
+                ? { url: t }
+                : void 0;
         if ("object" == typeof t) {
           if (this.isLoon()) {
             let e = t.openUrl || t.url || t["open-url"],
