@@ -5,55 +5,10 @@ const youthMap = require("./youth_timeread.json");
 !(async () => {
   let allPromise = [];
   for (let n = 0; n < youthMap.length; n++) {
-    const subPromise = new Promise((resolve, reject) => {
-      let msgs = [];
-      let name = youthMap[n].name;
-      let time = youthMap[n].time;
-      let bodys = youthMap[n].bodys;
-      msgs.push(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`)
-      $.begin = 0;
-      if (!bodys[0]) {
-        msgs.push(`============【提示】 ${$.name}:请把抓包的请求体填入youth_timeRead.json中  =============`)
-        resolve(msgs);
-      }
-      msgs.push(`账号${name}的中青body数:${bodys.length}个\n预计执行${(
-        bodys.length / 120
-      ).toFixed(2)}个小时`)
-      $.index = 0;
-      let readscore = 0;
-      for (let i = 0; i < bodys.length; i++) {
-        let read = bodys[i];
-        if (read) {
-          $.index = $.index + 1;
-          msgs.push(`\n开始中青看点第${$.index}次阅读`)
-        }
-        let data = await myAutoRead(read);
-        let readres = JSON.parse(data);
-        $.begin = $.begin + 1;
-        if (
-          readres.error_code == "0" &&
-          typeof readres.items.read_score === "number"
-        ) {
-          msgs.push(`本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`)
-          readscore += readres.items.read_score;
-          if (readres.items.read_score > 5) {
-            await myAddReadTime(time);
-          }
-        } else if (
-          readres.error_code == "0" &&
-          typeof readres.items.score === "number"
-        ) {
-          msgs.push(`本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`)
-          readscore += readres.items.score;
-        } else {
-          msgs.push(`第${$.index}次阅读请求失败`)
-        }
-        await $.wait(30000);
-      }
-      msgs.push(`账号${name}的中青看点共完成${$.index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`)
-      resolve(msgs)
-    })
-    allPromise.push(subPromise);
+    let name = youthMap[n].name;
+    let time = youthMap[n].time;
+    let bodys = youthMap[n].bodys;
+    allPromise.push(startWork(name,time,bodys))
   }
   Promise.all(allPromise).then(res => {
     let newArr = res.reduce((pre, cur) => {
@@ -68,6 +23,52 @@ const youthMap = require("./youth_timeread.json");
 })()
   .catch((e) => $.logErr(e))
   .finally(() => $.done());
+
+async function startWork(name,time,bodys){
+  return  new Promise((resolve, reject) => {
+    let index = 0;
+    let readscore = 0;
+    let msgs = [];
+    msgs.push(`============ 脚本执行-国际标准时间(UTC)：${new Date().toLocaleString()}  =============`)
+    if (!bodys[0]) {
+      msgs.push(`============【提示】 ${name}:请把抓包的请求体填入youth_timeRead.json中  =============`)
+      resolve(msgs);
+    }
+    msgs.push(`账号${name}的中青body数:${bodys.length}个\n预计执行${(
+      bodys.length / 120
+    ).toFixed(2)}个小时`)
+    for (let i = 0; i < bodys.length; i++) {
+      let read = bodys[i];
+      if (read) {
+        index = index + 1;
+        msgs.push(`\n开始中青看点第${index}次阅读`)
+      }
+      let data = await myAutoRead(read);
+      let readres = JSON.parse(data);
+      if (
+        readres.error_code == "0" &&
+        typeof readres.items.read_score === "number"
+      ) {
+        msgs.push(`本次阅读获得${readres.items.read_score}个青豆，请等待30s后执行下一次阅读`)
+        readscore += readres.items.read_score;
+        if (readres.items.read_score > 5) {
+          await myAddReadTime(time);
+        }
+      } else if (
+        readres.error_code == "0" &&
+        typeof readres.items.score === "number"
+      ) {
+        msgs.push(`本次阅读获得${readres.items.score}个青豆，即将开始下次阅读`)
+        readscore += readres.items.score;
+      } else {
+        msgs.push(`第${index}次阅读请求失败`)
+      }
+      await $.wait(30000);
+    }
+    msgs.push(`账号${name}的中青看点共完成${index}次阅读\n共计获得${readscore}个青豆，阅读请求全部结束`)
+    resolve(msgs)
+  })
+}
 
 //使用promise串联取来
 function myAutoRead(articlebody) {
