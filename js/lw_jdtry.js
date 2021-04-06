@@ -4,6 +4,10 @@
 
 感谢@ZCY01
 
+============Quantumultx===============
+[task_local]
+#商品试用
+41 9 * * * https://raw.githubusercontent.com/guakeliao/garbageCollection/master/js/lw_jdtry.js, tag=商品试用, enabled=true
  */
 
 
