@@ -1,6 +1,9 @@
 /*
 只能用一天。需每天寻找直播抓包
-1 8-23 * * * https://raw.githubusercontent.com/taoziya-ya/Quantumult-X/7c283afe683eb6384b1906f0d352af3b46024463/on%20the%20hour_redrain.js
+============Quantumultx===============
+[task_local]
+#整点京豆雨
+1 8-23 8 4 * https://raw.githubusercontent.com/guakeliao/garbageCollection/master/js/lw_hour_rain.js  tag=整点京豆雨, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_syj.png, enabled=true
 */
 const $ = new Env('整点京豆雨');
 let allMessage = '';
