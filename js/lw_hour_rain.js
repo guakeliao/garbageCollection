@@ -6,6 +6,7 @@
 1 8-23 8 4 * https://raw.githubusercontent.com/guakeliao/garbageCollection/master/js/lw_hour_rain.js  tag=整点京豆雨, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_syj.png, enabled=true
 */
 const $ = new Env('整点京豆雨');
+let redrainId = "RRA4RhWMc159kA62qLbaEa88evE7owb";
 let allMessage = '';
 let bodyList = {
   '20': {
@@ -14,22 +15,22 @@ let bodyList = {
   }
 }
 let ids = {
-  '8': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '9': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '10': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '11': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '12': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '13': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '14': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '15': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '16': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '17': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '18': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '19': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '20': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '21': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '22': 'RRA4RhWMc159kA62qLbaEa88evE7owb',
-  '23': 'RRA4RhWMc159kA62qLbaEa88evE7owb'
+  '8': redrainId,
+  '9': redrainId,
+  '10': redrainId,
+  '11': redrainId,
+  '12': redrainId,
+  '13': redrainId,
+  '14': redrainId,
+  '15': redrainId,
+  '16': redrainId,
+  '17': redrainId,
+  '18': redrainId,
+  '19': redrainId,
+  '20': redrainId,
+  '21': redrainId,
+  '22': redrainId,
+  '23': redrainId,
 }
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
