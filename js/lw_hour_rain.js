@@ -15,6 +15,14 @@ let bodyList = {
   }
 }
 let ids = {
+  '0': redrainId,
+  '1': redrainId,
+  '2': redrainId,
+  '3': redrainId,
+  '4': redrainId,
+  '5': redrainId,
+  '6': redrainId,
+  '7': redrainId,
   '8': redrainId,
   '9': redrainId,
   '10': redrainId,
