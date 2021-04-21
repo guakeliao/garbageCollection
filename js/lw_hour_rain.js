@@ -6,7 +6,7 @@
 1,30 8-23 * 4 * https://raw.githubusercontent.com/guakeliao/garbageCollection/master/js/lw_hour_rain.js  tag=整点京豆雨, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jd_syj.png, enabled=true
 */
 const $ = new Env('整点京豆雨');
-let redrainId = "RRAAYPHu6s5pWzYMqmfNygvvgJTKdq";
+let redrainId = "RRA4Kr8hch51J49qasBvEv8Agf8chAD";
 let allMessage = '';
 let bodyList = {
   '20': {
