@@ -80,7 +80,7 @@ def ws_key_to_pt_key(pt_pin, ws_key):
     ws_key换pt_key
     :return:
     """
-    allCookies = {
+    cookies = {
         'pin': pt_pin,
         'wskey': ws_key,
     }
@@ -94,7 +94,7 @@ def ws_key_to_pt_key(pt_pin, ws_key):
           '=&uemps=0-2&harmonyOs=0&st=1630413012009&sign=ca712dabc123eadd584ce93f63e00207&sv=121'
     body = 'body=%7B%22to%22%3A%22https%253a%252f%252fplogin.m.jd.com%252fjd-mlogin%252fstatic%252fhtml' \
            '%252fappjmp_blank.html%22%7D&'
-    response = requests.post(url, data=body, headers=headers, allCookies=allCookies, verify=False)
+    response = requests.post(url, data=body, headers=headers, cookies=cookies, verify=False)
     data = json.loads(response.text)
     if data.get('code') != '0':
         return None
@@ -107,7 +107,7 @@ def ws_key_to_pt_key(pt_pin, ws_key):
     }
     url += '?' + urlencode(params)
     session.get(url, allow_redirects=True)
-    for k, v in session.allCookies.items():
+    for k, v in session.cookies.items():
         if k == 'pt_key':
             return v
     return None
@@ -119,9 +119,9 @@ if __name__ == '__main__':
     else:
         s.headers.update({"authorization": "Bearer " + token})
     wsKeys = getitem("JD_WSCK")
-    allCookies = getitem('JD_COOKIE')
+    jdCookies = getitem('JD_COOKIE')
     # wsKeys = [{"value": "ws_key=sPfnMG2rb1buw11jIED1sJBXFv_dnK-qp2y-nY;pt_pin=%E6%8C%82%E7%A7%91%E5%BB%96;"}]
-    # allCookies = [{
+    # jdCookies = [{
     #         "value": "pt_key=app_openAAJhMaaIADDP4hdRBhDndzDpb2V4c5FTUPVo4RUsPfnMG2rb1buw11jIED1sJBXFv_dnK-qp2y-nY;pt_pin=%E6%8C%82%E7%A7%91%E5%BB%96;",
     #         "_id": "wtEX1U9cIhoNRFuI",
     #         "created": 1630315374904,
@@ -133,7 +133,7 @@ if __name__ == '__main__':
     # }]
     # 检查过期情况
     offCookies = []
-    for cookie in allCookies:
+    for cookie in jdCookies:
         alive = check_ck(cookie['value'])
         if alive == False:
             # 然后禁用
@@ -164,7 +164,7 @@ if __name__ == '__main__':
     newSks = []
     for wk in wsKeys:
         exist = False
-        for ck in allCookies:
+        for ck in jdCookies:
             if re.findall(r"pt_pin=(.*?);", wk['value'])[0] == re.findall(r"pt_pin=(.*?);", ck['value'])[0]:
                 exist = True
                 break
