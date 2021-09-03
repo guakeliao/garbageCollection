@@ -141,7 +141,7 @@ if __name__ == '__main__':
     # 检查过期情况
     offCookies = []
     for cookie in jdCookies:
-        if cookie['starus'] == 0:
+        if cookie['status'] == 0:
             alive = check_ck(cookie['value'])
             if alive == False:
                 # 然后禁用
