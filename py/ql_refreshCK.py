@@ -127,7 +127,10 @@ if __name__ == '__main__':
         if alive == False:
             # 然后禁用
             cookie['status'] = 1
-            update(cookie)
+            if update(cookie):
+                print('禁用%s:成功' % (cookie['remarks']))
+            else:
+                print('禁用%s:失败' % (cookie['remarks']))
             offCookies.append(cookie)
     print(offCookies)
     #wskeys获取新的ck
