@@ -120,17 +120,6 @@ if __name__ == '__main__':
         s.headers.update({"authorization": "Bearer " + token})
     wsKeys = getitem("JD_WSCK")
     jdCookies = getitem('JD_COOKIE')
-    # wsKeys = [{"value": "ws_key=sPfnMG2rb1buw11jIED1sJBXFv_dnK-qp2y-nY;pt_pin=%E6%8C%82%E7%A7%91%E5%BB%96;"}]
-    # jdCookies = [{
-    #         "value": "pt_key=app_openAAJhMaaIADDP4hdRBhDndzDpb2V4c5FTUPVo4RUsPfnMG2rb1buw11jIED1sJBXFv_dnK-qp2y-nY;pt_pin=%E6%8C%82%E7%A7%91%E5%BB%96;",
-    #         "_id": "wtEX1U9cIhoNRFuI",
-    #         "created": 1630315374904,
-    #         "status": 0,
-    #         "timestamp": "Fri Sep 03 2021 12:37:28 GMT+0800 (中国标准时间)",
-    #         "position": 1.0947644251442869E-37,
-    #         "name": "JD_COOKIE",
-    #         "remarks": "自己"
-    # }]
     # 检查过期情况
     offCookies = []
     for cookie in jdCookies:
@@ -142,47 +131,47 @@ if __name__ == '__main__':
             offCookies.append(cookie)
     print(offCookies)
     #wskeys获取新的ck
-    for off in offCookies:
-        off_pt_pin = re.findall(r"pt_pin=(.*?);", off['value'])[0]
-        off_pt_key = re.findall(r"pt_key=(.*?);", off['value'])[0]
-        off_nickname =  off['remarks']
-        for key in wsKeys:
-            if re.findall(r"pt_pin=(.*?);", key['value'])[0] == off_pt_pin:
-                ws_key = re.findall(r"ws_key=(.*?);", key['value'])[0]
-                pt_key = ws_key_to_pt_key(off_pt_pin, ws_key)
-                if pt_key is None:
-                    print("账号%s-%s:wskey可能过期了" % (off_nickname,off_pt_pin))
-                else:
-                    ptck = 'pt_key='+pt_key+';'+'pt_pin='+pt_pin+';'
-                    off['value']=ptck
-                    off['status']=0
-                    if update(off):
-                        print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
-                    else:
-                        print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
-    # 检查新增情况
-    newSks = []
-    for wk in wsKeys:
-        exist = False
-        for ck in jdCookies:
-            if re.findall(r"pt_pin=(.*?);", wk['value'])[0] == re.findall(r"pt_pin=(.*?);", ck['value'])[0]:
-                exist = True
-                break
-        if(exist != True):
-            newSks.append(wk)
-    # 新增账号
-    for sk in newSks:
-        ws_key = re.findall(r"ws_key=(.*?);", sk['value'])[0]
-        pt_pin = re.findall(r"pt_pin=(.*?);", sk['value'])[0]
-        pt_key = ws_key_to_pt_key(pt_pin, ws_key)
-        if pt_key is None:
-            print("账号%s:wskey可能过期了" % off_pt_pin)
-        else:
-            ptck = 'pt_key='+pt_key+';'+'pt_pin='+pt_pin+';'
-            if insert(sk):
-                print("账号%s:新增成功" % pt_pin)
-            else:
-                print("账号%s:新增失败" % pt_pin)
-
+    # for off in offCookies:
+    #     off_pt_pin = re.findall(r"pt_pin=(.*?);", off['value'])[0]
+    #     off_pt_key = re.findall(r"pt_key=(.*?);", off['value'])[0]
+    #     off_nickname =  off['remarks']
+    #     for key in wsKeys:
+    #         if re.findall(r"pt_pin=(.*?);", key['value'])[0] == off_pt_pin:
+    #             ws_key = re.findall(r"ws_key=(.*?);", key['value'])[0]
+    #             pt_key = ws_key_to_pt_key(off_pt_pin, ws_key)
+    #             if pt_key is None:
+    #                 print("账号%s-%s:wskey可能过期了" % (off_nickname,off_pt_pin))
+    #             else:
+    #                 ptck = 'pt_key='+pt_key+';'+'pt_pin='+off_pt_pin+';'
+    #                 off['value']=ptck
+    #                 off['status']=0
+    #                 if update(off):
+    #                     print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
+    #                 else:
+    #                     print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
+    # # 检查新增情况
+    # newSks = []
+    # for wk in wsKeys:
+    #     exist = False
+    #     for ck in jdCookies:
+    #         if re.findall(r"pt_pin=(.*?);", wk['value'])[0] == re.findall(r"pt_pin=(.*?);", ck['value'])[0]:
+    #             exist = True
+    #             break
+    #     if(exist != True):
+    #         newSks.append(wk)
+    # # 新增账号
+    # for sk in newSks:
+    #     ws_key = re.findall(r"ws_key=(.*?);", sk['value'])[0]
+    #     pt_pin = re.findall(r"pt_pin=(.*?);", sk['value'])[0]
+    #     pt_key = ws_key_to_pt_key(pt_pin, ws_key)
+    #     if pt_key is None:
+    #         print("账号%s:wskey可能过期了" % off_pt_pin)
+    #     else:
+    #         ptck = 'pt_key='+pt_key+';'+'pt_pin='+pt_pin+';'
+    #         if insert(sk):
+    #             print("账号%s:新增成功" % pt_pin)
+    #         else:
+    #             print("账号%s:新增失败" % pt_pin)
+    #
 
 
