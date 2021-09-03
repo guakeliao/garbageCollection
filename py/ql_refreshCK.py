@@ -150,7 +150,7 @@ if __name__ == '__main__':
                 #     print('禁用%s:失败' % (cookie['remarks']))
                 offCookies.append(cookie)
     print(offCookies)
-    wskeys获取新的ck
+    # wskeys获取新的ck
     for off in offCookies:
         off_pt_pin = re.findall(r"pt_pin=(.*?);", off['value'])[0]
         off_pt_key = re.findall(r"pt_key=(.*?);", off['value'])[0]
