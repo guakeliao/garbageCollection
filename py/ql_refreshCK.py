@@ -160,8 +160,6 @@ if __name__ == '__main__':
                         print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
                     else:
                         print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
-            else:
-                print('123')
     # 检查新增情况
     newSks = []
     for wk in wsKeys:
