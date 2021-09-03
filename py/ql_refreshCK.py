@@ -53,10 +53,9 @@ def update(ck, qlid):
         return False
 
 def disable(qlid):
-    url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
+    url = "http://127.0.0.1:5700/api/envs/disable"
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
     data = {
-        "status": 1,
         "_id": qlid
     }
     r = s.put(url, data=json.dumps(data))
