@@ -37,7 +37,7 @@ def getitem(key):
     item = json.loads(r.text)["data"]
     return item
 
-def update(data):
+def updateCK(data):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
     data = data
@@ -47,7 +47,7 @@ def update(data):
     else:
         return False
 
-def insert(ck):
+def insertCK(ck):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
     data = []
@@ -127,7 +127,7 @@ if __name__ == '__main__':
         if alive == False:
             # 然后禁用
             cookie['status'] = 1
-            if update(cookie):
+            if updateCK(cookie):
                 print('禁用%s:成功' % (cookie['remarks']))
             else:
                 print('禁用%s:失败' % (cookie['remarks']))
@@ -148,7 +148,7 @@ if __name__ == '__main__':
     #                 ptck = 'pt_key='+pt_key+';'+'pt_pin='+off_pt_pin+';'
     #                 off['value']=ptck
     #                 off['status']=0
-    #                 if update(off):
+    #                 if updateCK(off):
     #                     print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
     #                 else:
     #                     print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
