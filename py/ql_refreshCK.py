@@ -37,17 +37,35 @@ def getitem(key):
     item = json.loads(r.text)["data"]
     return item
 
-def updateCK(data):
+def update(ck, qlid):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
-    data = data
+    data = {
+        "name": "JD_COOKIE",
+        "value": ck,
+        "status": 0,
+        "_id": qlid
+    }
     r = s.put(url, data=json.dumps(data))
     if json.loads(r.text)["code"] == 200:
         return True
     else:
         return False
 
-def insertCK(ck):
+def disable(qlid):
+    url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
+    s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    data = {
+        "status": 1,
+        "_id": qlid
+    }
+    r = s.put(url, data=json.dumps(data))
+    if json.loads(r.text)["code"] == 200:
+        return True
+    else:
+        return False
+
+def insert(ck):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
     data = []
@@ -123,15 +141,15 @@ if __name__ == '__main__':
     # 检查过期情况
     offCookies = []
     for cookie in jdCookies:
-        alive = check_ck(cookie['value'])
-        if alive == False:
-            # 然后禁用
-            cookie['status'] = 1
-            if updateCK(cookie):
-                print('禁用%s:成功' % (cookie['remarks']))
-            else:
-                print('禁用%s:失败' % (cookie['remarks']))
-            offCookies.append(cookie)
+        if cookie['starus'] == 0:
+            alive = check_ck(cookie['value'])
+            if alive == False:
+                # 然后禁用
+                if disable(cookie['_id']):
+                    print('禁用%s:成功' % (cookie['remarks']))
+                else:
+                    print('禁用%s:失败' % (cookie['remarks']))
+                offCookies.append(cookie)
     print(offCookies)
     #wskeys获取新的ck
     # for off in offCookies:
@@ -148,7 +166,7 @@ if __name__ == '__main__':
     #                 ptck = 'pt_key='+pt_key+';'+'pt_pin='+off_pt_pin+';'
     #                 off['value']=ptck
     #                 off['status']=0
-    #                 if updateCK(off):
+    #                 if update(off):
     #                     print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
     #                 else:
     #                     print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
