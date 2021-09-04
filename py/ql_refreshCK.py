@@ -162,9 +162,11 @@ if __name__ == '__main__':
         off_pt_pin = re.findall(r"pt_pin=(.*?);", off['value'])[0]
         off_pt_key = re.findall(r"pt_key=(.*?);", off['value'])[0]
         off_nickname =  off['remarks']
-        for key in wsKeys:
-            if re.findall(r"pt_pin=(.*?);", key['value'])[0] == off_pt_pin:
-                ws_key = re.findall(r"ws_key=(.*?);", key['value'])[0]
+        for wk in wsKeys:
+            if wk['status'] == 1:
+                continue
+            if re.findall(r"pt_pin=(.*?);", wk['value'])[0] == off_pt_pin:
+                ws_key = re.findall(r"ws_key=(.*?);", wk['value'])[0]
                 pt_key = ws_key_to_pt_key(off_pt_pin, ws_key)
                 if pt_key is None:
                     print("账号%s-%s:wskey可能过期了" % (off_nickname,off_pt_pin))
@@ -172,13 +174,14 @@ if __name__ == '__main__':
                     ptck = 'pt_key='+pt_key+';'+'pt_pin='+off_pt_pin+';'
                     if update(ptck,off['_id']):
                         print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
-                        disable(off['_id'])
+                        if enable(off['_id']):
+                            print('启用%s:成功' % (off_nickname))
                     else:
                         print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
     # 检查新增情况
     newSks = []
     for wk in wsKeys:
-        if int(wk['status']) == 1:
+        if wk['status'] == 1:
             continue
         exist = False
         for ck in jdCookies:
