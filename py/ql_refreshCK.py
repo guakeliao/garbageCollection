@@ -113,9 +113,9 @@ def ws_key_to_pt_key(pt_pin, ws_key):
         'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
     }
     url = 'https://api.m.jd.com/client.action?functionId=genToken&clientVersion=10.1.2&build=89743&client=android' \
-          '&d_brand=&d_model=&osVersion=&screen=&partner=&oaid=&openudid=a27b83d3d1dba1cc&eid=&sdkVersion=30&lang' \
-          '=zh_CN&uuid=a27b83d3d1dba1cc&aid=a27b83d3d1dba1cc&area=19_1601_36953_50397&networkType=wifi&wifiBssid=&uts' \
-          '=&uemps=0-2&harmonyOs=0&st=1630413012009&sign=ca712dabc123eadd584ce93f63e00207&sv=121'
+          '&d_brand=&d_model=&osVersion=&screen=&partner=&oaid=&openudid=519d13459da59eef6fcaba1e9ed91a7aaf638340&eid=&sdkVersion=30&lang' \
+          '=zh_CN&uuid=hjudwgohxzVu96krv/T6Hg==&aid=a27b83d3d1dba1cc&area=19_1601_36953_50397&networkType=wifi&wifiBssid=&uts' \
+          '=&uemps=0-2&harmonyOs=0&st=1630766174629&sign=5aa8873ff5d69dc7f0fd00ba57f2554b&sv=112'
     body = 'body=%7B%22to%22%3A%22https%253a%252f%252fplogin.m.jd.com%252fjd-mlogin%252fstatic%252fhtml' \
            '%252fappjmp_blank.html%22%7D&'
     response = requests.post(url, data=body, headers=headers, cookies=cookies, verify=False)
