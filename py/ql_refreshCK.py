@@ -51,13 +51,21 @@ def update(ck, qlid):
     else:
         return False
 
+#禁用cookie
 def disable(qlid):
-    url = "http://127.0.0.1:5700/api/envs/disable"
+    url=config['url']+"/api/envs/disable?t="+str(round(time.time() * 1000))
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
-    data = {
-        "_id": qlid
-    }
-    r = s.put(url, data=json.dumps(data))
+    r=s.put(url,json=[qlid])
+    if json.loads(r.text)["code"] == 200:
+        return True
+    else:
+        return False
+
+#启用cookie
+def enable(qlid):
+    url=config['url']+"/api/envs/enable?t="+str(round(time.time() * 1000))
+    s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    r=s.put(url,json=[id])
     if json.loads(r.text)["code"] == 200:
         return True
     else:
@@ -143,11 +151,10 @@ if __name__ == '__main__':
             alive = check_ck(cookie['value'])
             if alive == False:
                 # 然后禁用
-                # TODO 禁用功能
-                # if disable(cookie['_id']):
-                #     print('禁用%s:成功' % (cookie['remarks']))
-                # else:
-                #     print('禁用%s:失败' % (cookie['remarks']))
+                if disable(cookie['_id']):
+                    print('禁用%s:成功' % (cookie['remarks']))
+                else:
+                    print('禁用%s:失败' % (cookie['remarks']))
                 offCookies.append(cookie)
     print(offCookies)
     # wskeys获取新的ck
@@ -165,6 +172,7 @@ if __name__ == '__main__':
                     ptck = 'pt_key='+pt_key+';'+'pt_pin='+off_pt_pin+';'
                     if update(ptck,off['_id']):
                         print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
+                        disable(off['_id'])
                     else:
                         print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
     # 检查新增情况
