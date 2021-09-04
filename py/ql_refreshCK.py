@@ -65,7 +65,7 @@ def disable(qlid):
 def enable(qlid):
     url="http://127.0.0.1:5700/api/envs/enable?t="+str(round(time.time() * 1000))
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
-    r=s.put(url,json=[id])
+    r=s.put(url,json=[qlid])
     if json.loads(r.text)["code"] == 200:
         return True
     else:
