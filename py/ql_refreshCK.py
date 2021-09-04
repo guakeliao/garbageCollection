@@ -178,6 +178,8 @@ if __name__ == '__main__':
     # 检查新增情况
     newSks = []
     for wk in wsKeys:
+        if int(wk['status']) == 1:
+            continue
         exist = False
         for ck in jdCookies:
             if re.findall(r"pt_pin=(.*?);", wk['value'])[0] == re.findall(r"pt_pin=(.*?);", ck['value'])[0]:
