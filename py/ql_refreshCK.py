@@ -53,7 +53,7 @@ def update(ck, qlid):
 
 #禁用cookie
 def disable(qlid):
-    url=config['url']+"/api/envs/disable?t="+str(round(time.time() * 1000))
+    url="http://127.0.0.1:5700/api/envs/disable?t="+str(round(time.time() * 1000))
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
     r=s.put(url,json=[qlid])
     if json.loads(r.text)["code"] == 200:
@@ -63,7 +63,7 @@ def disable(qlid):
 
 #启用cookie
 def enable(qlid):
-    url=config['url']+"/api/envs/enable?t="+str(round(time.time() * 1000))
+    url="http://127.0.0.1:5700/api/envs/enable?t="+str(round(time.time() * 1000))
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
     r=s.put(url,json=[id])
     if json.loads(r.text)["code"] == 200:
