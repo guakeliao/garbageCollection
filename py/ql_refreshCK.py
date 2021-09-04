@@ -148,15 +148,15 @@ if __name__ == '__main__':
     offCookies = []
     for cookie in jdCookies:
         if cookie['status'] == 0:
-            alive = check_ck(cookie['value'])
-            if alive == False:
+            if check_ck(cookie['value']) == False:
+                offCookies.append(cookie)
                 # 然后禁用
                 if disable(cookie['_id']):
                     print('禁用%s:成功' % (cookie['remarks']))
                 else:
                     print('禁用%s:失败' % (cookie['remarks']))
-                offCookies.append(cookie)
-    print(offCookies)
+        else:
+            offCookies.append(cookie)
     # wskeys获取新的ck
     for off in offCookies:
         off_pt_pin = re.findall(r"pt_pin=(.*?);", off['value'])[0]
