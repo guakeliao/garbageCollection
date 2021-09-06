@@ -7,16 +7,17 @@ import time
 import json
 from urllib.parse import urlencode
 import re
+
 requests.packages.urllib3.disable_warnings()
 
-token=""
+token = ""
 if username == "" or password == "":
     f = open("/ql/config/auth.json")
     auth = f.read()
     auth = json.loads(auth)
     username = auth["username"]
     password = auth["password"]
-    token=auth["token"]
+    token = auth["token"]
     f.close()
 
 
@@ -37,6 +38,7 @@ def getitem(key):
     item = json.loads(r.text)["data"]
     return item
 
+
 def update(ck, qlid):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
@@ -51,25 +53,28 @@ def update(ck, qlid):
     else:
         return False
 
-#禁用cookie
+
+# 禁用cookie
 def disable(qlid):
-    url="http://127.0.0.1:5700/api/envs/disable?t="+str(round(time.time() * 1000))
+    url = "http://127.0.0.1:5700/api/envs/disable?t=" + str(round(time.time() * 1000))
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
-    r=s.put(url,json=[qlid])
+    r = s.put(url, json=[qlid])
     if json.loads(r.text)["code"] == 200:
         return True
     else:
         return False
 
-#启用cookie
+
+# 启用cookie
 def enable(qlid):
-    url="http://127.0.0.1:5700/api/envs/enable?t="+str(round(time.time() * 1000))
+    url = "http://127.0.0.1:5700/api/envs/enable?t=" + str(round(time.time() * 1000))
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
-    r=s.put(url,json=[qlid])
+    r = s.put(url, json=[qlid])
     if json.loads(r.text)["code"] == 200:
         return True
     else:
         return False
+
 
 def insert(ck):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
@@ -86,24 +91,45 @@ def insert(ck):
     else:
         return False
 
+
 def check_ck(ck):
-    url='https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder'
-    headers={'Cookie':ck,'Referer':'https://home.m.jd.com/myJd/home.action','User-Agent':'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1',}
-    res=requests.get(url=url,headers=headers,verify=False,timeout=30)
-    if res.status_code==200:
-        code=int(json.loads(res.text)['retcode'])
-        if code==0:
+    url = 'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder'
+    headers = {'Cookie': ck, 'Referer': 'https://home.m.jd.com/myJd/home.action',
+               'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.2 Mobile/15E148 Safari/604.1', }
+    res = requests.get(url=url, headers=headers, verify=False, timeout=30)
+    if res.status_code == 200:
+        code = int(json.loads(res.text)['retcode'])
+        if code == 0:
             return True
         else:
             return False
     else:
         return False
 
+
+def get_sign():
+    url = 'https://hellodns.coding.net/p/sign/d/jsign/git/raw/master/sign'
+    res = requests.get(url=url, verify=False, timeout=20)
+    sign_list = json.loads(res.text)
+    clientVersion = sign_list['clientVersion']
+    if clientVersion is None:
+        clientVersion = '10.1.2'
+    client = sign_list['client']
+    if client is None:
+        client = 'android'
+    sv = sign_list['sv']
+    st = sign_list['st']
+    uuid = sign_list['uuid']
+    sign = sign_list['sign']
+    return clientVersion, client, sv, st, uuid, sign
+
+
 def ws_key_to_pt_key(pt_pin, ws_key):
     """
     ws_key换pt_key
     :return:
     """
+    clientVersion, client, sv, st, uuid, sign = get_sign()
     cookies = {
         'pin': pt_pin,
         'wskey': ws_key,
@@ -112,10 +138,10 @@ def ws_key_to_pt_key(pt_pin, ws_key):
         'user-agent': 'okhttp/3.12.1;jdmall;android;version/10.1.2;build/89743;screen/1080x2293;os/11;network/wifi;',
         'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
     }
-    url = 'https://api.m.jd.com/client.action?functionId=genToken&clientVersion=10.1.2&build=89743&client=android' \
+    url = 'https://api.m.jd.com/client.action?functionId=genToken&clientVersion=%s&build=89743&client=%s' \
           '&d_brand=&d_model=&osVersion=&screen=&partner=&oaid=&openudid=519d13459da59eef6fcaba1e9ed91a7aaf638340&eid=&sdkVersion=30&lang' \
-          '=zh_CN&uuid=hjudwgohxzVu96krv/T6Hg==&aid=a27b83d3d1dba1cc&area=19_1601_36953_50397&networkType=wifi&wifiBssid=&uts' \
-          '=&uemps=0-2&harmonyOs=0&st=1630766174629&sign=5aa8873ff5d69dc7f0fd00ba57f2554b&sv=112'
+          '=zh_CN&uuid=%s==&aid=a27b83d3d1dba1cc&area=19_1601_36953_50397&networkType=wifi&wifiBssid=&uts' \
+          '=&uemps=0-2&harmonyOs=0&st=%s&sign=%s&sv=%s' % (clientVersion, client, uuid, st, sign, sv)
     body = 'body=%7B%22to%22%3A%22https%253a%252f%252fplogin.m.jd.com%252fjd-mlogin%252fstatic%252fhtml' \
            '%252fappjmp_blank.html%22%7D&'
     response = requests.post(url, data=body, headers=headers, cookies=cookies, verify=False)
@@ -136,9 +162,10 @@ def ws_key_to_pt_key(pt_pin, ws_key):
             return v
     return None
 
+
 if __name__ == '__main__':
     s = requests.session()
-    if token =="":
+    if token == "":
         login(username, password)
     else:
         s.headers.update({"authorization": "Bearer " + token})
@@ -161,7 +188,7 @@ if __name__ == '__main__':
     for off in offCookies:
         off_pt_pin = re.findall(r"pt_pin=(.*?);", off['value'])[0]
         off_pt_key = re.findall(r"pt_key=(.*?);", off['value'])[0]
-        off_nickname =  off['remarks']
+        off_nickname = off['remarks']
         for wk in wsKeys:
             if wk['status'] == 1:
                 continue
@@ -169,15 +196,15 @@ if __name__ == '__main__':
                 ws_key = re.findall(r"ws_key=(.*?);", wk['value'])[0]
                 pt_key = ws_key_to_pt_key(off_pt_pin, ws_key)
                 if pt_key is None:
-                    print("账号%s-%s:wskey可能过期了" % (off_nickname,off_pt_pin))
+                    print("账号%s-%s:wskey可能过期了" % (off_nickname, off_pt_pin))
                 else:
-                    ptck = 'pt_key='+pt_key+';'+'pt_pin='+off_pt_pin+';'
-                    if update(ptck,off['_id']):
-                        print("账号%s-%s:更新成功" % (off_nickname,off_pt_pin))
+                    ptck = 'pt_key=' + pt_key + ';' + 'pt_pin=' + off_pt_pin + ';'
+                    if update(ptck, off['_id']):
+                        print("账号%s-%s:更新成功" % (off_nickname, off_pt_pin))
                         if enable(off['_id']):
                             print('启用%s:成功' % (off_nickname))
                     else:
-                        print("账号%s-%s:更新失败" % (off_nickname,off_pt_pin))
+                        print("账号%s-%s:更新失败" % (off_nickname, off_pt_pin))
     # 检查新增情况
     newSks = []
     for wk in wsKeys:
@@ -188,7 +215,7 @@ if __name__ == '__main__':
             if re.findall(r"pt_pin=(.*?);", wk['value'])[0] == re.findall(r"pt_pin=(.*?);", ck['value'])[0]:
                 exist = True
                 break
-        if(exist != True):
+        if (exist != True):
             newSks.append(wk)
     # 新增账号
     for sk in newSks:
@@ -198,11 +225,8 @@ if __name__ == '__main__':
         if pt_key is None:
             print("账号%s:wskey可能过期了" % off_pt_pin)
         else:
-            ptck = 'pt_key='+pt_key+';'+'pt_pin='+pt_pin+';'
+            ptck = 'pt_key=' + pt_key + ';' + 'pt_pin=' + pt_pin + ';'
             if insert(sk):
                 print("账号%s:新增成功" % pt_pin)
             else:
                 print("账号%s:新增失败" % pt_pin)
-
-
-
