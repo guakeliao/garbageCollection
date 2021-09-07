@@ -11,6 +11,7 @@ import re
 requests.packages.urllib3.disable_warnings()
 
 token = ""
+
 if username == "" or password == "":
     f = open("/ql/config/auth.json")
     auth = f.read()
@@ -19,10 +20,6 @@ if username == "" or password == "":
     password = auth["password"]
     token = auth["token"]
     f.close()
-
-
-def gettimestamp():
-    return str(int(time.time() * 1000))
 
 
 def login(username, password):
@@ -39,6 +36,11 @@ def getitem(key):
     return item
 
 
+def gettimestamp():
+    return str(int(time.time() * 1000))
+
+
+# 更新ck
 def update(ck, qlid):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
@@ -54,28 +56,7 @@ def update(ck, qlid):
         return False
 
 
-# 禁用cookie
-def disable(qlid):
-    url = "http://127.0.0.1:5700/api/envs/disable?t=" + str(round(time.time() * 1000))
-    s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
-    r = s.put(url, json=[qlid])
-    if json.loads(r.text)["code"] == 200:
-        return True
-    else:
-        return False
-
-
-# 启用cookie
-def enable(qlid):
-    url = "http://127.0.0.1:5700/api/envs/enable?t=" + str(round(time.time() * 1000))
-    s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
-    r = s.put(url, json=[qlid])
-    if json.loads(r.text)["code"] == 200:
-        return True
-    else:
-        return False
-
-
+# 新增ck
 def insert(ck):
     url = "http://127.0.0.1:5700/api/envs?t=%s" % gettimestamp()
     s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
@@ -92,6 +73,29 @@ def insert(ck):
         return False
 
 
+# 禁用cookie
+def disable(qlid):
+    url = "http://127.0.0.1:5700/api/envs/disable?t=%s" % gettimestamp()
+    s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    r = s.put(url, json=[qlid])
+    if json.loads(r.text)["code"] == 200:
+        return True
+    else:
+        return False
+
+
+# 启用cookie
+def enable(qlid):
+    url = "http://127.0.0.1:5700/api/envs/enable?t=%" % gettimestamp()
+    s.headers.update({"Content-Type": "application/json;charset=UTF-8"})
+    r = s.put(url, json=[qlid])
+    if json.loads(r.text)["code"] == 200:
+        return True
+    else:
+        return False
+
+
+# 检查ck是否过期
 def check_ck(ck):
     url = 'https://wq.jd.com/user_new/info/GetJDUserInfoUnion?orgFlag=JD_PinGou_New&callSource=mainorder'
     headers = {'Cookie': ck, 'Referer': 'https://home.m.jd.com/myJd/home.action',
@@ -107,29 +111,12 @@ def check_ck(ck):
         return False
 
 
-def get_sign():
-    url = 'https://hellodns.coding.net/p/sign/d/jsign/git/raw/master/sign'
-    res = requests.get(url=url, verify=False, timeout=20)
-    sign_list = json.loads(res.text)
-    clientVersion = sign_list['clientVersion']
-    if clientVersion is None:
-        clientVersion = '10.1.2'
-    client = sign_list['client']
-    if client is None:
-        client = 'android'
-    sv = sign_list['sv']
-    st = sign_list['st']
-    uuid = sign_list['uuid']
-    sign = sign_list['sign']
-    return clientVersion, client, sv, st, uuid, sign
-
-
+# wsk=>pt
 def ws_key_to_pt_key(pt_pin, ws_key):
     """
     ws_key换pt_key
     :return:
     """
-    clientVersion, client, sv, st, uuid, sign = get_sign()
     cookies = {
         'pin': pt_pin,
         'wskey': ws_key,
@@ -138,10 +125,10 @@ def ws_key_to_pt_key(pt_pin, ws_key):
         'user-agent': 'okhttp/3.12.1;jdmall;android;version/10.1.2;build/89743;screen/1080x2293;os/11;network/wifi;',
         'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
     }
-    url = 'https://api.m.jd.com/client.action?functionId=genToken&clientVersion=%s&build=89743&client=%s' \
-          '&d_brand=&d_model=&osVersion=&screen=&partner=&oaid=&openudid=519d13459da59eef6fcaba1e9ed91a7aaf638340&eid=&sdkVersion=30&lang' \
-          '=zh_CN&uuid=%s==&aid=a27b83d3d1dba1cc&area=19_1601_36953_50397&networkType=wifi&wifiBssid=&uts' \
-          '=&uemps=0-2&harmonyOs=0&st=%s&sign=%s&sv=%s' % (clientVersion, client, uuid, st, sign, sv)
+    url = 'https://api.m.jd.com/client.action?functionId=genToken&clientVersion=10.1.2&build=89743&client=android' \
+          '&d_brand=&d_model=&osVersion=&screen=&partner=&oaid=&openudid=a27b83d3d1dba1cc&eid=&sdkVersion=30&lang' \
+          '=zh_CN&uuid=a27b83d3d1dba1cc&aid=a27b83d3d1dba1cc&area=19_1601_36953_50397&networkType=wifi&wifiBssid=&uts' \
+          '=&uemps=0-2&harmonyOs=0&st=1630413012009&sign=ca712dabc123eadd584ce93f63e00207&sv=121'
     body = 'body=%7B%22to%22%3A%22https%253a%252f%252fplogin.m.jd.com%252fjd-mlogin%252fstatic%252fhtml' \
            '%252fappjmp_blank.html%22%7D&'
     response = requests.post(url, data=body, headers=headers, cookies=cookies, verify=False)
