@@ -28,4 +28,4 @@ jobs:
       - name: '运行 【中青看点】'
         run: |
           cd ~/js   
-          node js/youth.js
+          node js/youth/youth.js

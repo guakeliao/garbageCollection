@@ -25,4 +25,4 @@ jobs:
       - name: '运行 【中青分享】'
         run: |
           cd ~/js   
-          node js/youthshare.js
+          node js/youth/youthshare.js
