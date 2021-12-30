@@ -1,29 +1,9 @@
 /*
-京东极速版签到+赚现金任务
-每日9毛左右，满3，10，50可兑换无门槛红包
-⚠️⚠️⚠️一个号需要运行40分钟左右
-
-活动时间：长期
-活动入口：京东极速版app-现金签到
-已支持IOS双京东账号,Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-============Quantumultx===============
-[task_local]
-#京东极速版
-21 3,8 * * * https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js, tag=京东极速版, img-url=https://raw.githubusercontent.com/Orz-3/task/master/jd.png, enabled=true
-
-================Loon==============
-[Script]
-cron "21 3,8 * * *" script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js,tag=京东极速版
-
-===============Surge=================
-京东极速版 = type=cron,cronexp="21 3,8 * * *",wake-system=1,timeout=33600,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js
-
-============小火箭=========
-京东极速版 = type=cron,script-path=https://raw.githubusercontent.com/Aaron-lv/sync/jd_scripts/jd_speed_sign.js, cronexpr="21 3,8 * * *", timeout=33600, enable=true
+  京东极速版签到+赚现金任务
+  cron "21 8,20 * * *
 */
-const $ = new Env('京东极速版自用版本');
-const notify = $.isNode() ? require('./sendNotify.js') : '';
+const $ = new Env('京东极速版自用');
+const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let cookiesArr = [], cookie = '', message;
@@ -666,7 +646,6 @@ function taskGetUrl(function_id, body) {
 }
 
 function invite2() {
-  let t = +new Date()
   let inviterIdArr = [
     'PiwLHZBkHzANPB9fB4er3w==',
     'tniRPovx1ok/K9RzNDRAOg==',
@@ -677,15 +656,15 @@ function invite2() {
   let inviterId = inviterIdArr[Math.floor((Math.random() * inviterIdArr.length))]
   let options = {
     url: "https://api.m.jd.com/",
-    body: `functionId=TaskInviteService&body=${JSON.stringify({"method":"participateInviteTask","data":{"channel":"1","encryptionInviterPin":encodeURIComponent(inviterId),"type":1}})}&appid=market-task-h5&uuid=&_t=${t}`,
+    body: `functionId=TaskInviteService&body=${JSON.stringify({"method":"participateInviteTask","data":{"channel":"1","encryptionInviterPin":encodeURIComponent(inviterId),"type":1}})}&appid=market-task-h5&uuid=&_t=${Date.now()}`,
     headers: {
       "Host": "api.m.jd.com",
       "Accept": "application/json, text/plain, */*",
       "Content-Type": "application/x-www-form-urlencoded",
-      "Origin": "https://gray.jd.com",
+      "Origin": "https://assignment.jd.com",
       "Accept-Language": "zh-CN,zh-Hans;q=0.9",
       "User-Agent": $.isNode() ? (process.env.JS_USER_AGENT ? process.env.JS_USER_AGENT : (require('./JS_USER_AGENTS').USER_AGENT)) : ($.getdata('JSUA') ? $.getdata('JSUA') : "'jdltapp;iPad;3.1.0;14.4;network/wifi;Mozilla/5.0 (iPad; CPU OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1"),
-      "Referer": "https://gray.jd.com/",
+      "Referer": "https://assignment.jd.com/",
       "Accept-Encoding": "gzip, deflate, br",
       "Cookie": cookie
     }
@@ -698,8 +677,11 @@ function invite2() {
 function invite() {
   let t = +new Date()
   let inviterIdArr = [
+    'PiwLHZBkHzANPB9fB4er3w==',
     'tniRPovx1ok/K9RzNDRAOg==',
-    'PiwLHZBkHzANPB9fB4er3w=='
+    'p6iPF3V1BeM+cA0fQKoN8g==',
+    '/RUOWUzZwe0//5WRGP5Mu2pYRv8A6bUWX+kPs6fK7Pw=',
+    'cKHE0T6DqfF8KqMBuJKUAC3bPZvTMgdEElGaWKmYQbE='
   ]
   let inviterId = inviterIdArr[Math.floor((Math.random() * inviterIdArr.length))]
   let options = {
