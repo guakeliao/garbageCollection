@@ -7,7 +7,7 @@
 
 const {readTyt, writeTyt} = require("./lw_write");
 const FILEPATH = './tyt.json';
-const $ = new Env('lw-极速版-推推赚大钱');//助力前八个可助力的账号不满意去57行改即可
+const $ = new Env('lw-极速版-推推赚大钱');
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -53,8 +53,7 @@ if ($.isNode()) {
         await info()
         await coinDozerBackFlow()
         await getCoinDozerInfo()
-        console.log('\n助力前八个可助力的账号不满意去57行改即可\n');
-        if (inviteCodes.length >= 7) {
+        if (inviteCodes.length >= 3) {
             break
         }
     }
@@ -63,13 +62,27 @@ if ($.isNode()) {
     let localCodes = readTyt(FILEPATH);
     console.log(localCodes);
     if (typeof localCodes === 'ArrayConstructor') {
+        //把没有的加入到localCodes中
+        for (let invite of inviteCodes) {
+            let find = false
+            for (let local of localCodes) {
+                if (invite.user === local.user) {
+                    find = true;
+                    break;
+                }
+            }
+            if (find === false) {
+                localCodes.push(invite);
+            }
+        }
+        //更新localCodes中的数据
         for (let i = 0; i < localCodes.length; i++) {
             let local = localCodes[i];
             let findItems = inviteCodes.filter(item => {
-                return item.user === local.user
+                return (item.user === local.user && item.packetId !== local.packetId)
             })
             if (findItems.length > 0) {
-                localCodes.splice(i, 1, findItems);
+                localCodes.splice(i, findItems.length, findItems);
             }
         }
     } else {
