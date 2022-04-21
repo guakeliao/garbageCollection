@@ -75,11 +75,12 @@ if ($.isNode()) {
                 localCodes.push(invite);
             }
         }
+        console.log(localCodes);
         //更新localCodes中的数据
         for (let i = 0; i < localCodes.length; i++) {
             let local = localCodes[i];
             let findItems = inviteCodes.filter(item => {
-                return (item.user === local.user && item.packetId !== local.packetId)
+                return (item.user === local.user)
             })
             if (findItems.length > 0) {
                 localCodes.splice(i, findItems.length, findItems);
