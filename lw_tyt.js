@@ -87,6 +87,16 @@ if ($.isNode()) {
     } else {
         localCodes = inviteCodes;
     }
+    //将大号提到首位
+    cookie = cookiesArr[0];
+    let user = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
+    let swpArr = localCodes.filter(item => {
+        return (item.user === user)
+    })
+    if (swpArr.length > 0) {
+        localCodes.splice(localCodes.indexOf(swpArr[0]), 1);
+        localCodes.splice(0, 0, swpArr[0]);
+    }
     inviteCodes = localCodes;
     writeTyt(localCodes, FILEPATH);
     console.log('\n-------- 插入数据结束 -------------------\n');
