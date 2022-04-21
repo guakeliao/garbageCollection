@@ -61,6 +61,7 @@ if ($.isNode()) {
     }
     // FIXME:-------- 插入数据开始 -------------------
     let localCodes = readTyt(FILEPATH);
+    console.log(localCodes);
     if (typeof localCodes === 'ArrayConstructor') {
         for (let i = 0; i < localCodes.length; i++) {
             let local = localCodes[i];
@@ -74,6 +75,7 @@ if ($.isNode()) {
     } else {
         localCodes = inviteCodes;
     }
+    console.log(localCodes);
     inviteCodes = localCodes;
     writeTyt(localCodes, FILEPATH);
     // FIXME:-------- 插入数据结束 -------------------
