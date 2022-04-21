@@ -7,9 +7,13 @@ exports.readTyt = function (filePath) {
     console.log('readTyt开始');
     let data = fs.readFileSync(filePath, "utf8");
     if (typeof data === "string") {
-        return JSON.parse(data);
+        try {
+            return JSON.parse(data);
+        } catch (e) {
+            return null
+        }
+
     }
-    console.log('readTyt结束');
     return null;
 }
 

@@ -25,8 +25,6 @@ if ($.isNode()) {
 } else {
     cookiesArr = [$.getdata('CookieJD'), $.getdata('CookieJD2'), ...jsonParse($.getdata('CookiesJD') || "[]").map(item => item.cookie)].filter(item => !!item);
 }
-let localCodes = readTyt(FILEPATH);
-console.log(localCodes);
 !(async () => {
     if (!cookiesArr[0]) {
         $.msg($.name, '【提示】请先获取京东账号一cookie\n直接使用NobyDa的京东签到获取', 'https://bean.m.jd.com/bean/signIndex.action', {"open-url": "https://bean.m.jd.com/bean/signIndex.action"});
@@ -63,7 +61,6 @@ console.log(localCodes);
     // FIXME:-------- 插入数据开始 -------------------
     console.log('\n-------- 插入数据开始 -------------------\n');
     let localCodes = readTyt(FILEPATH);
-    console.log(localCodes);
     if (typeof localCodes === 'ArrayConstructor') {
         for (let i = 0; i < localCodes.length; i++) {
             let local = localCodes[i];
@@ -77,7 +74,6 @@ console.log(localCodes);
     } else {
         localCodes = inviteCodes;
     }
-    console.log(localCodes);
     inviteCodes = localCodes;
     writeTyt(localCodes, FILEPATH);
     console.log('\n-------- 插入数据结束 -------------------\n');
