@@ -60,8 +60,7 @@ if ($.isNode()) {
     // FIXME:-------- 插入数据开始 -------------------
     console.log('\n-------- 插入数据开始 -------------------\n');
     let localCodes = readTyt(FILEPATH);
-    console.log(localCodes);
-    if (typeof localCodes === 'ArrayConstructor') {
+    if (typeof localCodes === 'object') {
         //把没有的加入到localCodes中
         for (let invite of inviteCodes) {
             let find = false
@@ -75,7 +74,6 @@ if ($.isNode()) {
                 localCodes.push(invite);
             }
         }
-        console.log(localCodes);
         //更新localCodes中的数据
         for (let i = 0; i < localCodes.length; i++) {
             let local = localCodes[i];

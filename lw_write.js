@@ -4,7 +4,6 @@ let fs = require("fs");
  * 读文件
  */
 exports.readTyt = function (filePath) {
-    console.log('readTyt开始');
     let data = fs.readFileSync(filePath, "utf8");
     if (typeof data === "string") {
         try {
