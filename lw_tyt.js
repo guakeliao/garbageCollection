@@ -60,6 +60,7 @@ if ($.isNode()) {
         }
     }
     // FIXME:-------- 插入数据开始 -------------------
+    console.log('\n-------- 插入数据开始 -------------------\n');
     let localCodes = readTyt(FILEPATH);
     console.log(localCodes);
     if (typeof localCodes === 'ArrayConstructor') {
@@ -78,6 +79,7 @@ if ($.isNode()) {
     console.log(localCodes);
     inviteCodes = localCodes;
     writeTyt(localCodes, FILEPATH);
+    console.log('\n-------- 插入数据结束 -------------------\n');
     // FIXME:-------- 插入数据结束 -------------------
     console.log('\n#######开始助力前三个可助力的账号#######\n');
     cookiesArr.sort(function () {
