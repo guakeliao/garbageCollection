@@ -5,7 +5,10 @@ let fs = require("fs");
  */
 exports.readTyt = function (filePath) {
     let data = fs.readFileSync(filePath, "utf8");
-    return JSON.parse(data);
+    if (typeof data === "string") {
+        return JSON.parse(data);
+    }
+    return null;
 }
 
 /**
