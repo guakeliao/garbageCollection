@@ -5,7 +5,7 @@
 0 1 * * * jd_tyt.js, tag=推一推, img-url=
 */
 
-const {readTyt, writeTyt} = require("./lw_write");
+const HELPJS = require("./lw_write");
 const FILEPATH = './tyt.json';
 const $ = new Env('lw-极速版-推推赚大钱');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -59,46 +59,8 @@ if ($.isNode()) {
     }
     // FIXME:-------- 插入数据开始 -------------------
     console.log('\n-------- 插入数据开始 -------------------\n');
-    let localCodes = readTyt(FILEPATH);
-    if (typeof localCodes === 'object') {
-        //把没有的加入到localCodes中
-        for (let invite of inviteCodes) {
-            let find = false
-            for (let local of localCodes) {
-                if (invite.user === local.user) {
-                    find = true;
-                    break;
-                }
-            }
-            if (find === false) {
-                localCodes.push(invite);
-            }
-        }
-        //更新localCodes中的数据
-        for (let i = 0; i < localCodes.length; i++) {
-            let local = localCodes[i];
-            let findItems = inviteCodes.filter(item => {
-                return (item.user === local.user)
-            })
-            if (findItems.length > 0) {
-                localCodes.splice(i, findItems.length, findItems);
-            }
-        }
-    } else {
-        localCodes = inviteCodes;
-    }
-    //将大号提到首位
-    cookie = cookiesArr[0];
-    let user = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-    let swpArr = localCodes.filter(item => {
-        return (item.user === user)
-    })
-    if (swpArr.length > 0) {
-        localCodes.splice(localCodes.indexOf(swpArr[0]), 1);
-        localCodes.splice(0, 0, swpArr[0]);
-    }
-    inviteCodes = localCodes;
-    writeTyt(localCodes, FILEPATH);
+    let userName = decodeURIComponent(cookiesArr[0].match(/pt_pin=([^; ]+)(?=;?)/) && cookiesArr[0].match(/pt_pin=([^; ]+)(?=;?)/)[1])
+    inviteCodes = HELPJS.dealCodes(inviteCodes, FILEPATH, userName);
     console.log('\n-------- 插入数据结束 -------------------\n');
     // FIXME:-------- 插入数据结束 -------------------
     console.log('\n#######开始助力前三个可助力的账号#######\n');
