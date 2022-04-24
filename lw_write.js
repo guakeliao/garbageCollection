@@ -3,7 +3,7 @@ let fs = require("fs");
 /**
  * 读文件
  */
-function readTyt(filePath) {
+function read(filePath) {
     let data = fs.readFileSync(filePath, "utf8");
     if (typeof data === "string") {
         try {
@@ -11,7 +11,6 @@ function readTyt(filePath) {
         } catch (e) {
             return null
         }
-
     }
     return null;
 }
@@ -19,7 +18,7 @@ function readTyt(filePath) {
 /**
  * 写文件
  */
-function writeTyt(list, filePath) {
+function write(list, filePath) {
     let data = JSON.stringify(list);
     fs.writeFileSync(filePath, data, "utf-8");
 }
@@ -30,11 +29,12 @@ function writeTyt(list, filePath) {
  * @param remoteCodes 获取的邀请码
  * @param user 需要提到首位的ck名称
  * @param filePath 路径
+ * @param user 用户名
  * @returns {*[]}
  */
 function dealCodes(remoteCodes, filePath, user = null) {
     let codes = [];
-    let localCodes = readTyt(filePath);
+    let localCodes = read(filePath);
     //保证远端的code放到最前面。便于后面的去重
     codes = codes.concat(remoteCodes);
     if (Array.isArray(localCodes) && localCodes.length > 0) {
@@ -68,9 +68,13 @@ function dealCodes(remoteCodes, filePath, user = null) {
             codes.splice(0, 0, swpArr[0]);
         }
     }
-    writeTyt(codes, filePath);
+    write(codes, filePath);
     return codes;
 }
+
+module.exports.dealCodes = dealCodes;
+module.exports.read = read;
+module.exports.write = write;
 
 // const FILE = './tyt.json'
 // let ss = [  {
@@ -90,4 +94,11 @@ function dealCodes(remoteCodes, filePath, user = null) {
 //     }]
 // dealCodes(ss, FILE, '婷婷玉立789')
 
-module.exports.dealCodes = dealCodes;
+const FILEPATH = './shoptoken.json';
+console.log(read(FILEPATH));
+
+write(["6A7CD06046134C5EEDEBCB11EE4DA525", "6DAD8A8B77EC507D6513DE633CCB6406", "35D4DA3E0543F4E5BE9B064A168EB8FC", "1839C304BF5FC0DD8BE3962A941BA26D", "BEDA253B1EEC9AE327205E1EC5A6507E", "52BFD44493EF44683C6EDB371C180FCF", "77B55D285165B2A29B4AE71793DE0248"
+    ],
+    FILEPATH
+)
+console.log(read(FILEPATH));
