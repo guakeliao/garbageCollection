@@ -60,6 +60,7 @@ if ($.isNode()) {
     }
     // FIXME:-------- 插入数据开始 -------------------
     console.log('\n-------- 插入数据开始 -------------------\n');
+    console.log(`helpCount:${inviteCodes.length}`)
     let userName = decodeURIComponent(cookiesArr[0].match(/pt_pin=([^; ]+)(?=;?)/) && cookiesArr[0].match(/pt_pin=([^; ]+)(?=;?)/)[1])
     inviteCodes = HELPJS.dealCodes(inviteCodes, FILEPATH, userName);
     console.log('\n-------- 插入数据结束 -------------------\n');
