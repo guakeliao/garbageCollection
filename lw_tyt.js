@@ -1,8 +1,6 @@
 /*
-旁白
- [task_local]
-#快速推一推
-0 1 * * * jd_tyt.js, tag=推一推, img-url=
+    快速推一推
+    cron "35 8,12 * * *
 */
 
 const HELPJS = require("./lw_write");
