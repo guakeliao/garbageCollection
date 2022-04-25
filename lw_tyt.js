@@ -16,6 +16,7 @@ const JD_API_HOST = 'https://api.m.jd.com';
 let cookiesArr = [], cookie = '', message;
 let status = ''
 let inviteCodes = []
+let helpCount = process.env.helpCount ?? "2";
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -53,7 +54,7 @@ if ($.isNode()) {
         await info()
         await coinDozerBackFlow()
         await getCoinDozerInfo()
-        if (inviteCodes.length >= 3) {
+        if (inviteCodes.length >= helpCount) {
             break
         }
     }
@@ -63,10 +64,6 @@ if ($.isNode()) {
     inviteCodes = HELPJS.dealCodes(inviteCodes, FILEPATH, userName);
     console.log('\n-------- 插入数据结束 -------------------\n');
     // FIXME:-------- 插入数据结束 -------------------
-    console.log('\n#######开始助力前三个可助力的账号#######\n');
-    cookiesArr.sort(function () {
-        return .5 - Math.random();
-    });
     for (let i = 0; i < cookiesArr.length; i++) {
         cookie = cookiesArr[i];
         $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
