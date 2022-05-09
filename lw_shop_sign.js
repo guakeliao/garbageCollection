@@ -1,9 +1,6 @@
 /*
-店铺签到，各类店铺签到，有新的店铺直接添加token即可
-============Quantumultx===============
-[task_local]
-#店铺签到
-0 0 * * * jd_shop_sign.js
+店铺签到
+cron "35 10,22 * * *
 */
 const HELPJS = require("./lw_write");
 const FILEPATH = './shoptoken.json';
