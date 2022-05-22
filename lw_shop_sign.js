@@ -21,11 +21,7 @@ let num = 0
 let shopname = ''
 let allToken = HELPJS.read(FILEPATH);
 console.log(`===================开始前的coken===================:\n${allToken}`);
-<<<<<<< HEAD
 if (!Array.isArray(allToken)) {
-=======
-if (typeof allToken !== 'object') {
->>>>>>> 4a52bac40c8c1d4acd407743a89bec78c4959829
     console.log(`------------token文件错误------------`);
     return;
 }
