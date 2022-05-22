@@ -20,6 +20,7 @@ let vender = ''
 let num = 0
 let shopname = ''
 let allToken = HELPJS.read(FILEPATH);
+console.log(`===================开始前的coken===================:${allToken}`);
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -72,6 +73,7 @@ if ($.isNode()) {
     .finally(() => {
         $.done();
         //剩余的token
+        console.log(`===================剩余的coken===================:${allToken}`);
         HELPJS.write(allToken, FILEPATH);
     })
 
@@ -97,7 +99,8 @@ async function dpqd() {
 function getvenderId(token) {
     return new Promise(resolve => {
         const options = {
-            url: `https://api.m.jd.com/api?appid=interCenter_shopSign&t=${Date.now()}&loginType=2&functionId=interact_center_shopSign_getActivityInfo&body={%22token%22:%22${token}%22,%22venderId%22:%22%22}&jsonp=jsonp1000`, headers: {
+            url: `https://api.m.jd.com/api?appid=interCenter_shopSign&t=${Date.now()}&loginType=2&functionId=interact_center_shopSign_getActivityInfo&body={%22token%22:%22${token}%22,%22venderId%22:%22%22}&jsonp=jsonp1000`,
+            headers: {
                 "accept": "*/*",
                 "accept-encoding": "gzip, deflate, br",
                 "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -172,7 +175,8 @@ function getvenderName(venderId) {
 function getActivityInfo(token, venderId) {
     return new Promise(resolve => {
         const options = {
-            url: `${JD_API_HOST}&t=${Date.now()}&loginType=2&functionId=interact_center_shopSign_getActivityInfo&body={%22token%22:%22${token}%22,%22venderId%22:${venderId}}&jsonp=jsonp1005`, headers: {
+            url: `${JD_API_HOST}&t=${Date.now()}&loginType=2&functionId=interact_center_shopSign_getActivityInfo&body={%22token%22:%22${token}%22,%22venderId%22:${venderId}}&jsonp=jsonp1005`,
+            headers: {
                 "accept": "accept",
                 "accept-encoding": "gzip, deflate",
                 "accept-language": "zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -246,7 +250,8 @@ function signCollectGift(token, venderId, activitytemp) {
 function taskUrl(token, venderId) {
     return new Promise(resolve => {
         const options = {
-            url: `${JD_API_HOST}&t=${Date.now()}&loginType=2&functionId=interact_center_shopSign_getSignRecord&body={%22token%22:%22${token}%22,%22venderId%22:${venderId},%22activityId%22:${activityId},%22type%22:56}&jsonp=jsonp1006`, headers: {
+            url: `${JD_API_HOST}&t=${Date.now()}&loginType=2&functionId=interact_center_shopSign_getSignRecord&body={%22token%22:%22${token}%22,%22venderId%22:${venderId},%22activityId%22:${activityId},%22type%22:56}&jsonp=jsonp1006`,
+            headers: {
                 "accept": "application/json",
                 "accept-encoding": "gzip, deflate, br",
                 "accept-language": "zh-CN,zh;q=0.9",
@@ -431,7 +436,11 @@ function Env(t, e) {
                 i = i ? i.replace(/\n/g, "").trim() : i;
                 let r = this.getdata("@chavy_boxjs_userCfgs.httpapi_timeout");
                 r = r ? 1 * r : 20, r = e && e.timeout ? e.timeout : r;
-                const [o, h] = i.split("@"), a = {url: `http://${h}/v1/scripting/evaluate`, body: {script_text: t, mock_type: "cron", timeout: r}, headers: {"X-Key": o, Accept: "*/*"}};
+                const [o, h] = i.split("@"), a = {
+                    url: `http://${h}/v1/scripting/evaluate`,
+                    body: {script_text: t, mock_type: "cron", timeout: r},
+                    headers: {"X-Key": o, Accept: "*/*"}
+                };
                 this.post(a, (t, e, i) => s(i))
             }).catch(t => this.logErr(t))
         }
@@ -440,7 +449,8 @@ function Env(t, e) {
             if (!this.isNode()) return {};
             {
                 this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
-                const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile), s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e);
+                const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile),
+                    s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e);
                 if (!s && !i) return {};
                 {
                     const i = s ? t : e;
@@ -456,7 +466,8 @@ function Env(t, e) {
         writedata() {
             if (this.isNode()) {
                 this.fs = this.fs ? this.fs : require("fs"), this.path = this.path ? this.path : require("path");
-                const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile), s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e), r = JSON.stringify(this.data);
+                const t = this.path.resolve(this.dataFile), e = this.path.resolve(process.cwd(), this.dataFile),
+                    s = this.fs.existsSync(t), i = !s && this.fs.existsSync(e), r = JSON.stringify(this.data);
                 s ? this.fs.writeFileSync(t, r) : i ? this.fs.writeFileSync(e, r) : this.fs.writeFileSync(t, r)
             }
         }
@@ -489,7 +500,8 @@ function Env(t, e) {
         setdata(t, e) {
             let s = !1;
             if (/^@/.test(e)) {
-                const [, i, r] = /^@(.*?)\.(.*?)$/.exec(e), o = this.getval(i), h = i ? "null" === o ? null : o || "{}" : "{}";
+                const [, i, r] = /^@(.*?)\.(.*?)$/.exec(e), o = this.getval(i),
+                    h = i ? "null" === o ? null : o || "{}" : "{}";
                 try {
                     const e = JSON.parse(h);
                     this.lodash_set(e, r, t), s = this.setval(JSON.stringify(e), i)
@@ -560,7 +572,13 @@ function Env(t, e) {
 
         time(t) {
             let e = {
-                "M+": (new Date).getMonth() + 1, "d+": (new Date).getDate(), "H+": (new Date).getHours(), "m+": (new Date).getMinutes(), "s+": (new Date).getSeconds(), "q+": Math.floor(((new Date).getMonth() + 3) / 3), S: (new Date).getMilliseconds()
+                "M+": (new Date).getMonth() + 1,
+                "d+": (new Date).getDate(),
+                "H+": (new Date).getHours(),
+                "m+": (new Date).getMinutes(),
+                "s+": (new Date).getSeconds(),
+                "q+": Math.floor(((new Date).getMonth() + 3) / 3),
+                S: (new Date).getMilliseconds()
             };
             /(y+)/.test(t) && (t = t.replace(RegExp.$1, ((new Date).getFullYear() + "").substr(4 - RegExp.$1.length)));
             for (let s in e) new RegExp("(" + s + ")").test(t) && (t = t.replace(RegExp.$1, 1 == RegExp.$1.length ? e[s] : ("00" + e[s]).substr(("" + e[s]).length)));
