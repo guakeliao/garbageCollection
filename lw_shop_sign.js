@@ -21,6 +21,10 @@ let num = 0
 let shopname = ''
 let allToken = HELPJS.read(FILEPATH);
 console.log(`===================开始前的coken===================:\n${allToken}`);
+if (typeof allToken !== 'object') {
+    console.log(`------------token文件错误------------`);
+    return;
+}
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
