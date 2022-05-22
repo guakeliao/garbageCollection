@@ -20,7 +20,7 @@ let vender = ''
 let num = 0
 let shopname = ''
 let allToken = HELPJS.read(FILEPATH);
-console.log(`===================开始前的coken===================:${allToken}`);
+console.log(`===================开始前的coken===================:\n${allToken}`);
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -73,7 +73,7 @@ if ($.isNode()) {
     .finally(() => {
         $.done();
         //剩余的token
-        console.log(`===================剩余的coken===================:${allToken}`);
+        console.log(`===================剩余的coken===================:\n${allToken}`);
         HELPJS.write(allToken, FILEPATH);
     })
 
