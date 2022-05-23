@@ -22,6 +22,8 @@ if (!Array.isArray(allToken)) {
     console.log(`------------token文件错误------------`);
     return;
 }
+//去重
+allToken = Array.from(new Set(allToken));
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
