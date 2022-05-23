@@ -17,13 +17,13 @@ let vender = ''
 let num = 0
 let shopname = ''
 let allToken = HELPJS.read(FILEPATH);
-console.log(`===================开始前的coken===================:\n${allToken}`);
 if (!Array.isArray(allToken)) {
     console.log(`------------token文件错误------------`);
     return;
 }
 //去重
 allToken = Array.from(new Set(allToken));
+console.log(`===================开始前的coken===================:\n${allToken}`);
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
