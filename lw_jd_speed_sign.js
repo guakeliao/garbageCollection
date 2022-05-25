@@ -1,6 +1,6 @@
 /*
   京东极速版签到+赚现金任务
-  cron "21 8,20 * * *
+  cron 21 8,20 * * *
 */
 const $ = new Env('lw-京东极速版');
 const notify = $.isNode() ? require('./sendNotify') : '';

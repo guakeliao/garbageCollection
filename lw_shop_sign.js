@@ -1,6 +1,6 @@
 /*
 店铺签到
-cron "35 10,22 * * *
+cron 35 10,22 * * *
 */
 const HELPJS = require("./lw_write");
 const FILEPATH = './shoptoken.json';
