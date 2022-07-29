@@ -23,7 +23,7 @@ if (!Array.isArray(allToken)) {
 }
 //去重
 allToken = Array.from(new Set(allToken));
-console.log(`===================开始前的coken===================:\n${allToken}`);
+console.log(`===================开始前的coken总计${allToken.length}===================:\n${allToken}`);
 if ($.isNode()) {
     Object.keys(jdCookieNode).forEach((item) => {
         cookiesArr.push(jdCookieNode[item])
@@ -76,7 +76,7 @@ if ($.isNode()) {
     .finally(() => {
         $.done();
         //剩余的token
-        console.log(`===================剩余的coken===================:\n${allToken}`);
+        console.log(`===================剩余的coken总计${allToken.length}===================:\n${allToken}`);
         HELPJS.write(allToken, FILEPATH);
     })
 
