@@ -13,9 +13,7 @@ let cookiesArr = [], cookie = '', allMessage = '', message;
 const JD_API_HOST = 'https://api.m.jd.com/api?appid=interCenter_shopSign';
 
 let activityId = ''
-let vender = ''
 let num = 0
-let shopname = ''
 let allToken = HELPJS.read(FILEPATH);
 if (!Array.isArray(allToken)) {
     console.log(`------------token文件错误------------`);
@@ -82,19 +80,19 @@ if ($.isNode()) {
 
 //开始店铺签到
 async function dpqd() {
-    for (var j = 0; j < allToken.length; j++) {
+    for (let j = 0; j < allToken.length; j++) {
         num = j + 1
-        if (allToken[j] == '') {
+        if (allToken[j] === '') {
             continue
         }
-        await getvenderId(allToken[j])
-        if (vender == '') {
+        let venderId = await getvenderId(allToken[j])
+        if (venderId === '') {
             continue
         }
-        await getvenderName(vender)
-        await getActivityInfo(allToken[j], vender)
-        await signCollectGift(allToken[j], vender, activityId)
-        await taskUrl(allToken[j], vender)
+        await getvenderName(venderId)
+        await getActivityInfo(allToken[j], venderId)
+        await signCollectGift(allToken[j], venderId, activityId)
+        await taskUrl(allToken[j], venderId)
     }
 }
 
@@ -113,28 +111,27 @@ function getvenderId(token) {
             }
         }
         $.get(options, (err, resp, data) => {
+            let venderId = ''
             try {
                 if (err) {
                     console.log(`\n${$.name}: API查询请求失败 ‼️‼️`)
                     $.logErr(err);
                 } else {
-                    //console.log(data)
                     data = JSON.parse(/{(.*)}/g.exec(data)[0])
                     if (data.code == 402) {
-                        vender = ''
                         if (allToken.indexOf(token) !== -1) {
                             allToken.splice(allToken.indexOf(token), 1);
                         }
                         console.log(`第` + num + `个店铺签到活动已失效`)
                         message += `第` + num + `个店铺签到活动已失效\n`
                     } else {
-                        vender = data.data.venderId
+                        venderId = data.data.venderId
                     }
                 }
             } catch (e) {
                 $.logErr(e, resp);
             } finally {
-                resolve(data);
+                resolve(venderId);
             }
         })
     })
@@ -160,7 +157,7 @@ function getvenderName(venderId) {
                 } else {
                     //console.log(data)
                     data = JSON.parse(data)
-                    shopName = data.shopName
+                    let shopName = data.shopName
                     console.log(`【` + shopName + `】`)
                     message += `【` + shopName + `】`
                 }
