@@ -9,7 +9,7 @@ on:
       environment:
         description: 'Environment to run tests against'
         type: environment
-        required: false 
+        required: true 
   schedule:
      - cron: '*/12 * * * *'
   watch:
