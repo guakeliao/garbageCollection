@@ -2,11 +2,6 @@ name: 中青阅读
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: false 
   schedule:
      - cron: '10 6,13,20 * * *'
 jobs:
