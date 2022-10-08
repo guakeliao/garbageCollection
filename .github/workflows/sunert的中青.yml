@@ -4,7 +4,6 @@
 name: 中青看点_sunert
 
 on:
-  workflow_dispatch:
   schedule:
      - cron: '*/12 * * * *'
   watch:
