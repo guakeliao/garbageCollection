@@ -5,11 +5,6 @@ name: 中青看点_sunert
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to run tests against'
-        type: environment
-        required: false 
   schedule:
      - cron: '*/12 * * * *'
   watch:
