@@ -1,0 +1,128 @@
+[
+  {
+    "name": "DSM",
+    "code": "local",
+    "url": "192.168.31.253:5000",
+    "description": "local"
+  },
+  {
+    "name": "DSM",
+    "code": "zerotier",
+    "url": "192.168.192.252:500",
+    "description": "zerotier"
+  },
+  {
+    "name": "DSM",
+    "code": "network",
+    "url": "dsm.guakeliao.top:500",
+    "description": "network"
+  },
+  {
+    "name": "OPENWRT",
+    "code": "local",
+    "url": "192.168.31.252",
+    "description": "local"
+  },
+  {
+    "name": "OPENWRT",
+    "code": "zerotier",
+    "url": "192.168.192.252",
+    "description": "zerotier"
+  },
+  {
+    "name": "OPENWRT",
+    "code": "network",
+    "url": "wrt.guakeliao.top",
+    "description": "network"
+  },
+  {
+    "name": "EMBY",
+    "code": "local",
+    "url": "192.168.31.253:8096",
+    "description": "local"
+  },
+  {
+    "name": "EMBY",
+    "code": "zerotier",
+    "url": "192.168.192.252:8096",
+    "description": "zerotier"
+  },
+  {
+    "name": "EMBY",
+    "code": "network",
+    "url": "emby.guakeliao.top:500",
+    "description": "network"
+  },
+  {
+    "name": "TR",
+    "code": "local",
+    "url": "192.168.31.253:9091",
+    "description": "local"
+  },
+  {
+    "name": "TR",
+    "code": "zerotier",
+    "url": "192.168.192.252:9091",
+    "description": "zerotier"
+  },
+  {
+    "name": "TR",
+    "code": "network",
+    "url": "tr.guakeliao.top:500",
+    "description": "network"
+  },
+  {
+    "name": "QL1",
+    "code": "local",
+    "url": "192.168.31.253:5701",
+    "description": "local"
+  },
+  {
+    "name": "QL1",
+    "code": "zerotier",
+    "url": "192.168.192.252:5701",
+    "description": "zerotier"
+  },
+  {
+    "name": "QL1",
+    "code": "network",
+    "url": "ql1.guakeliao.top:500",
+    "description": "network"
+  },
+  {
+    "name": "QL2",
+    "code": "local",
+    "url": "192.168.31.253:5702",
+    "description": "local"
+  },
+  {
+    "name": "QL2",
+    "code": "zerotier",
+    "url": "192.168.192.252:5702",
+    "description": "zerotier"
+  },
+  {
+    "name": "QL2",
+    "code": "network",
+    "url": "ql2.guakeliao.top:500",
+    "description": "network"
+  },
+  {
+    "name": "QL3",
+    "code": "local",
+    "url": "192.168.31.253:5703",
+    "description": "local"
+  },
+  {
+    "name": "QL3",
+    "code": "zerotier",
+    "url": "192.168.192.252:5703",
+    "description": "zerotier"
+  },
+  {
+    "name": "QL3",
+    "code": "network",
+    "url": "ql3.guakeliao.top:500",
+    "description": "network"
+  }
+]
