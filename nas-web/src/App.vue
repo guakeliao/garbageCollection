@@ -1,53 +1,44 @@
 <script setup lang="ts">
-import BoxCard from '@/components/BoxCard/index.vue'
-import FormatCk from '@/components/FormatCk/index.vue'
-import medias, {Media, SYS_CODE} from "@/config/Media";
 import {ref} from "vue";
+import {getEnvs} from "@/config/ql.js"
+import clipboard from "clipboard";
+import {ElMessage} from "element-plus";
 
-const model = ref(SYS_CODE.zerotier)
-const allMediaList = ref(new Array<Media>())
-const currentMediaList = ref(new Array<Media>())
-const modelChange = (val: Event) => {
-  let currentModel: string = val.target.value
-  currentMediaList.value = allMediaList.value.filter(item => {
-    if (currentModel === SYS_CODE.all) {
-      return true
-    } else {
-      return item.code === currentModel
-    }
-  })
+const formModel = ref({cookie: null})
+const tips = ref('')
+const clicked = async () => {
+  let ss = await getEnvs;
+  console.log(ss)
+  // if (formModel.value.cookie) {
+  //   const ck: String = formModel.value.cookie as unknown as string
+  //   const cks = ck.match(/(pt_key|pt_pin)=.+?;/g) ?? [];
+  //   if (cks.length === 2) {
+  //     clipboard.copy(cks.join(''));
+  //     tips.value = cks.join('')
+  //     ElMessage.success('已经复制到剪切板')
+  //   } else {
+  //     ElMessage.error('提供的CK错误')
+  //   }
+  // }
 }
-const itemClick = (media: Media, index: number) => {
-  console.log(index)
-  console.log(media)
-  window.open(`${window.location.protocol}//${media.url}`)
-}
-medias().then(res => {
-  allMediaList.value = res;
-  currentMediaList.value = allMediaList.value.filter(item => item.code === model.value)
-})
 </script>
 
 <template>
-  <div class="body">
-    <div class="header">
-      <el-radio-group v-model="model" @input="modelChange">
-        <el-radio-button :label="SYS_CODE.all"></el-radio-button>
-        <el-radio-button :label="SYS_CODE.local"></el-radio-button>
-        <el-radio-button :label="SYS_CODE.zerotier"></el-radio-button>
-        <el-radio-button :label="SYS_CODE.network"></el-radio-button>
-      </el-radio-group>
-    </div>
-    <div class="container">
-      <BoxCard class="card" :mediaList="currentMediaList" @itemClick="itemClick"></BoxCard>
-      <FormatCk></FormatCk>
-    </div>
+  <div class="container">
+    <el-form label-position="top" label-width="200px" :model="formModel" style="width: 90%">
+      <el-form-item label="cookie提交">
+        <span>{{ tips }}</span>
+        <el-input v-model="formModel.cookie" :rows="10" type="textarea" placeholder="Please input" style="width: 100%"/>
+        <el-button @click="clicked">提交</el-button>
+      </el-form-item>
+    </el-form>
   </div>
 </template>
 
 <style scoped>
 .body {
   position: absolute;
+  width: 100%;
   top: 10%;
   left: 10%;
   right: 10%;
@@ -64,9 +55,11 @@ medias().then(res => {
 }
 
 .container {
+  position: absolute;
   display: flex;
   flex-wrap: wrap;
-  align-content: flex-start;
+  align-content: center;
+  justify-content: center;
   width: 100%;
 }
 
