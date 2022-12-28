@@ -11,7 +11,11 @@
   "compilerOptions": {
     "baseUrl": ".",
     "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
     "allowJs": true,
+    "types": [
+      "node"
+    ],
     "paths": {
       "@/*": [
         "./src/*"

@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import {getEnvs} from "@/config/ql.js"
+import {addEnv, getEnvs} from "@/config/ql"
 import clipboard from "clipboard";
 import {ElMessage} from "element-plus";
 
 const formModel = ref({cookie: null})
 const tips = ref('')
 const clicked = async () => {
-  let ss = await getEnvs;
-  console.log(ss)
-  // if (formModel.value.cookie) {
-  //   const ck: String = formModel.value.cookie as unknown as string
-  //   const cks = ck.match(/(pt_key|pt_pin)=.+?;/g) ?? [];
-  //   if (cks.length === 2) {
-  //     clipboard.copy(cks.join(''));
-  //     tips.value = cks.join('')
-  //     ElMessage.success('已经复制到剪切板')
-  //   } else {
-  //     ElMessage.error('提供的CK错误')
-  //   }
-  // }
+  // let test = await addEnv("测试这嘎不该");
+  // console.log(test)
+  if (formModel.value.cookie) {
+    const ck: String = formModel.value.cookie as unknown as string
+    const cks = ck.match(/(pt_key|pt_pin)=.+?;/g) ?? [];
+    if (cks.length === 2) {
+      let cookies = await getEnvs() as Array<any>;
+      let matches: Array<any> = cookies.find(cookie => cookie.value.includes(cks[1]))
+      console.log(matches);
+      clipboard.copy(cks.join(''));
+      tips.value = cks.join('')
+      ElMessage.success('已经复制到剪切板')
+    } else {
+      ElMessage.error('提供的CK错误')
+    }
+  }
 }
 </script>
 
