@@ -1,62 +1,86 @@
 <script setup lang="ts">
-import {ref} from "vue";
-import {addEnv, getEnvs} from "@/config/ql"
-import clipboard from "clipboard";
+import {reactive} from "vue";
+import {updateEnv, getConfigures} from "@/config/QL"
 import {ElMessage} from "element-plus";
 
-const formModel = ref({cookie: null})
-const tips = ref('')
+const model = reactive({cookie: null, configures: [] as any[]})
+const addConfigure = () => {
+  model.configures.push({
+    "baseUrl": "",
+    "client_id": "",
+    "client_secret": ""
+  })
+}
+const delConfigure = (index: number) => {
+
+}
+const saveConfigure = (index: number) => {
+
+}
 const clicked = async () => {
-  // let test = await addEnv("测试这嘎不该");
-  // console.log(test)
-  if (formModel.value.cookie) {
-    const ck: String = formModel.value.cookie as unknown as string
+  if (model.cookie) {
+    const ck: String = model.cookie as unknown as string
     const cks = ck.match(/(pt_key|pt_pin)=.+?;/g) ?? [];
     if (cks.length === 2) {
-      let cookies = await getEnvs() as Array<any>;
-      let matches: Array<any> = cookies.find(cookie => cookie.value.includes(cks[1]))
-      console.log(matches);
-      clipboard.copy(cks.join(''));
-      tips.value = cks.join('')
-      ElMessage.success('已经复制到剪切板')
+      await updateEnv(cks.join(''));
+      ElMessage.success('更新成功')
     } else {
       ElMessage.error('提供的CK错误')
     }
   }
 }
+getConfigures().then(res => {
+  model.configures.push(...res);
+})
 </script>
 
 <template>
   <div class="container">
-    <el-form label-position="top" label-width="200px" :model="formModel" style="width: 90%">
-      <el-form-item label="cookie提交">
-        <span>{{ tips }}</span>
-        <el-input v-model="formModel.cookie" :rows="10" type="textarea" placeholder="Please input" style="width: 100%"/>
-        <el-button @click="clicked">提交</el-button>
-      </el-form-item>
+    <el-form label-position="right" label-width="90px" :model="model" style="width: 90%">
+      <br/>
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="环境添加">
+            <el-button @click="addConfigure" disabled>环境添加</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <div v-for="(configure,index) in model.configures" inert>
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="baseUrl">
+              <el-input v-model="configure.baseUrl" placeholder="Please input"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="client_id">
+              <el-input v-model="configure.client_id" placeholder="Please input"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="client_secret">
+              <el-input v-model="configure.client_secret" placeholder="Please input"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-button @click="saveConfigure(index)">保存</el-button>
+            <el-button @click="delConfigure(index)">删除</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="cookie提交">
+            <el-input v-model="model.cookie" :rows="10" type="textarea" placeholder="Please input" style="width: 100%"/>
+            <el-button @click="clicked">提交</el-button>
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
   </div>
 </template>
 
 <style scoped>
-.body {
-  position: absolute;
-  width: 100%;
-  top: 10%;
-  left: 10%;
-  right: 10%;
-  bottom: 10%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-content: flex-start;
-  overflow: scroll;
-}
-
-.header {
-  margin: auto;
-}
-
 .container {
   position: absolute;
   display: flex;
@@ -66,8 +90,4 @@ const clicked = async () => {
   width: 100%;
 }
 
-.card {
-  height: 100%;
-  width: 100%;
-}
 </style>
