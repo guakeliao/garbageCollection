@@ -138,7 +138,7 @@ let enableCk = async (eid: string, configure: any) => {
 
 let getConfigures = async () => {
     let arr = new Array<any>()
-    let res = await axios.get('/public/configure.json')
+    let res = await axios.get('/configure.json')
     let list: Array<any> = res.data;
     arr.push(...list)
     configures = arr;
