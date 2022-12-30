@@ -36,8 +36,28 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <el-form-item label="cookie提交">
-          <el-input v-model="model.cookie" :rows="10" type="textarea" placeholder="Please input" style="width: 100%"/>
-          <el-button @click="clicked">提交</el-button>
+          <el-input v-model="model.cookie" @input="searchClick" :rows="10" type="textarea" placeholder="Please input" style="width: 100%"/>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <el-form-item label="备注">
+          <el-input v-model="model.env.remarks" placeholder="Please input"></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <el-form-item label="cookie">
+          <el-input v-model="model.env.value" placeholder="Please input" disabled></el-input>
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="24">
+        <el-form-item label="操作">
+          <el-button @click="submitClick">提交</el-button>
         </el-form-item>
       </el-col>
     </el-row>
@@ -46,10 +66,11 @@
 
 <script setup lang="ts">
 import {reactive} from "vue";
-import {getConfigures, updateEnv} from "@/config/QL"
+import {getConfigures, searchEnv, updateEnv} from "@/config/QL"
+import _ from "lodash"
 import {ElMessage} from "element-plus";
 
-const model = reactive({cookie: null, configures: [] as any[]})
+const model = reactive({cookie: null, env: {value: null as string | null, remarks: null as string | null, id: null as string | null}, configures: [] as any[]})
 const addConfigure = () => {
   model.configures.push({
     "baseUrl": "",
@@ -63,18 +84,38 @@ const delConfigure = (index: number) => {
 const saveConfigure = (index: number) => {
 
 }
-const clicked = async () => {
+
+const submitClick = async () => {
   if (model.cookie) {
     const ck: String = model.cookie as unknown as string
     const cks = ck.match(/(pt_key|pt_pin)=.+?;/g) ?? [];
     if (cks.length === 2) {
-      await updateEnv(cks.join(''));
+      await updateEnv(model.env.value as string, model.env.remarks, model.env.id);
       ElMessage.success('更新成功')
     } else {
       ElMessage.error('提供的CK错误')
     }
   }
 }
+
+const searchClick = _.debounce(async () => {
+  if (model.cookie) {
+    const ck: String = model.cookie as unknown as string
+    const cks = ck.match(/(pt_key|pt_pin)=.+?;/g) ?? [];
+    if (cks.length === 2) {
+      const [first] = await searchEnv(cks.join(''));
+      if (first) {
+        model.env.value = cks.join('')
+        model.env.remarks = first.remarks
+        model.env.id = first.id
+      } else {
+        model.env.value = cks.join('')
+        model.env.remarks = "新增账号"
+      }
+    }
+  }
+}, 500)
+
 getConfigures().then(res => {
   model.configures.push(...res);
 })

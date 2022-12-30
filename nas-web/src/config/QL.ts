@@ -15,31 +15,92 @@ api.interceptors.response.use(response => {
     return Promise.reject(error);
 });
 
-async function getToken(configure: any) {
-    // @ts-ignore
-    if (configure.token == null || configure.token === "") {
+let getTokenCache = (configure: any) => {
+    if (configure.token != null && configure.token.length > 0) {
+        return configure.token
+    }
+    return null
+}
+let getToken = async (configure: any) => {
+    let token = getTokenCache(configure);
+    if (token == null) {
         try {
             let res = await api({url: `${configure.baseUrl}/open/auth/token?client_id=${configure.client_id}&client_secret=${configure.client_secret}`, method: "get"}) as any;
-            configure.token = res.data.token;
+            token = res.data.token;
         } catch (e) {
             // @ts-ignore
             console.error(e.message)
             throw e
         }
     }
+    configure.token = token;
+    return token
 }
 
+let addCk = async (url: string, token: string, cookie: string, remarks: string = '新增账号') => {
+    const body = await api({
+        method: 'post',
+        url: `${url}/open/envs`,
+        params: {t: Date.now()},
+        data: [{
+            name: 'JD_COOKIE',
+            value: cookie,
+            remarks,
+        }],
+        headers: {
+            Accept: 'application/json',
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json;charset=UTF-8',
+        },
+    })
+    return body;
+};
+let updateCk = async (url: string, token: string, cookie: string, eid: string, remarks: string) => {
+    const body = await api({
+        method: 'put',
+        url: `${url}/open/envs`,
+        params: {t: Date.now()},
+        data: {
+            name: 'JD_COOKIE',
+            value: cookie,
+            id: eid,
+            remarks: remarks,
+        },
+        headers: {
+            Accept: 'application/json',
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json;charset=UTF-8',
+        },
+    });
+    return body
+}
+
+let enableCk = async (url: string, token: string, eid: string) => {
+    const body = await api({
+        method: 'put',
+        url: `${url}/open/envs/enable`,
+        params: {t: Date.now()},
+        data: JSON.stringify([eid]),
+        headers: {
+            Accept: 'application/json',
+            authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json;charset=UTF-8',
+        },
+    });
+    return body;
+};
 let getEnvs = async () => {
     let envs = [] as any[]
     for (let configure of configures) {
-        await getToken(configure);
+        let token = await getToken(configure);
+        let url = configure.baseUrl;
         try {
             const body = await api({
-                url: `${configure.baseUrl}/open/envs`,
+                url: `${url}/open/envs`,
                 method: "get",
                 headers: {
                     Accept: 'application/json',
-                    authorization: `Bearer ${configure.token}`,
+                    authorization: `Bearer ${token}`,
                 },
                 params: {
                     searchValue: 'JD_COOKIE',
@@ -56,32 +117,23 @@ let getEnvs = async () => {
     return envs
 };
 
-
-let addEnv = async (cookie: string, remarks: string = '新增账号') => {
-    let configure = configures[0]
-    await getToken(configure);
-    const body = await api({
-        method: 'post',
-        url: `${configure.baseUrl}/open/envs`,
-        params: {t: Date.now()},
-        data: [{
-            name: 'JD_COOKIE',
-            value: cookie,
-            remarks,
-        }],
-        headers: {
-            Accept: 'application/json',
-            authorization: `Bearer ${configure.token}`,
-            'Content-Type': 'application/json;charset=UTF-8',
-        },
-    })
-    return body;
+let updateEnv = async (cookie: string, remarks: string | null = null, eid: string | null = null) => {
+    debugger
+    let [env, index] = await searchEnv(cookie);
+    let configure = configures[index === -1 ? 0 : index];
+    if (index === -1) {
+        return await addCk(configure.baseUrl, configure.token, cookie, remarks ?? "新增账号");
+    } else {
+        await updateCk(configure.baseUrl, configure.token, cookie, eid as string, remarks as string);
+        return await enableCk(configure.baseUrl, configure.token, env.id)
+    }
 };
-let updateEnv = async (cookie: string, eid: string | null = null, remarks: string | null = null) => {
-    let envs = await getEnvs()
-    let index, env;
+const searchEnv = async (cookie: string) => {
+    debugger
+    let envs = await getEnvs() as [[any]]
+    let index: number, env: any;
     index = envs.findIndex(subEnvs => {
-        return (subEnvs as any[]).some(aa => {
+        return subEnvs.some(aa => {
             const envPins = (aa.value.match(/(pt_key|pt_pin)=.+?;/g) ?? []) as any[];
             const ckPins = (cookie.match(/(pt_key|pt_pin)=.+?;/g) ?? []) as any[];
             if (envPins.length === 2 && ckPins.length === 2) {
@@ -95,47 +147,10 @@ let updateEnv = async (cookie: string, eid: string | null = null, remarks: strin
         })
     })
     if (index === -1) {
-        return await addEnv(cookie)
+        return [null, index]
     }
-    let configure = configures[index];
-    const body = await api({
-        method: 'put',
-        url: `${configure.baseUrl}/open/envs`,
-        params: {t: Date.now()},
-        data: {
-            name: 'JD_COOKIE',
-            value: cookie,
-            // @ts-ignore
-            id: env.id,
-            // @ts-ignore
-            remarks: env.remarks,
-        },
-        headers: {
-            Accept: 'application/json',
-            authorization: `Bearer ${configure.token}`,
-            'Content-Type': 'application/json;charset=UTF-8',
-        },
-    });
-    // @ts-ignore
-    return await enableCk(env.id, configure)
-};
-
-let enableCk = async (eid: string, configure: any) => {
-    const body = await api({
-        method: 'put',
-        url: `${configure.baseUrl}/open/envs/enable`,
-        params: {t: Date.now()},
-        data: JSON.stringify([eid]),
-        headers: {
-            Accept: 'application/json',
-            authorization: `Bearer ${configure.token}`,
-            'Content-Type': 'application/json;charset=UTF-8',
-        },
-    });
-    return body;
-};
-
-
+    return [env, index];
+}
 let getConfigures = async () => {
     let arr = new Array<any>()
     let res = await axios.get('/configure.json')
@@ -152,4 +167,4 @@ const delConfigure = async (configure: any) => {
 const saveConfigure = (configure: any) => {
 
 }
-export {getConfigures, updateEnv}
+export {getConfigures, updateEnv, searchEnv}
