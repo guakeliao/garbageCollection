@@ -8,6 +8,7 @@
         </el-form-item>
       </el-col>
     </el-row>
+    <el-divider border-style="dashed"/>
     <div v-for="(configure,index) in model.configures" inert>
       <el-row :gutter="20">
         <el-col :span="8">
@@ -30,6 +31,7 @@
           <el-button @click="delConfigure(index)">删除</el-button>
         </el-col>
       </el-row>
+      <el-divider border-style="dashed"/>
     </div>
     <el-row :gutter="20">
       <el-col :span="24">
@@ -44,7 +46,7 @@
 
 <script setup lang="ts">
 import {reactive} from "vue";
-import {updateEnv, getConfigures} from "@/config/QL"
+import {getConfigures, updateEnv} from "@/config/QL"
 import {ElMessage} from "element-plus";
 
 const model = reactive({cookie: null, configures: [] as any[]})
@@ -79,5 +81,7 @@ getConfigures().then(res => {
 </script>
 
 <style scoped>
-
+/deep/ .el-divider--horizontal {
+  margin: 12px 0;
+}
 </style>
