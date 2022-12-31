@@ -9,26 +9,26 @@
       </el-col>
     </el-row>
     <el-divider border-style="dashed"/>
-    <div v-for="(configure,index) in model.configures" inert>
+    <div v-for="(configure,index) in model.configures">
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="baseUrl">
-            <el-input v-model="configure.baseUrl" placeholder="Please input"></el-input>
+            <el-input v-model="configure.baseUrl" placeholder="Please input" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="client_id">
-            <el-input v-model="configure.client_id" placeholder="Please input"></el-input>
+            <el-input v-model="configure.client_id" placeholder="Please input" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="client_secret">
-            <el-input v-model="configure.client_secret" placeholder="Please input"></el-input>
+            <el-input v-model="configure.client_secret" placeholder="Please input" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="4">
-          <el-button @click="saveConfigure(index)">保存</el-button>
-          <el-button @click="delConfigure(index)">删除</el-button>
+          <el-button @click="saveConfigure(index)" disabled>保存</el-button>
+          <el-button @click="delConfigure(index)" disabled>删除</el-button>
         </el-col>
       </el-row>
       <el-divider border-style="dashed"/>
