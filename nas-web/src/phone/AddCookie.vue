@@ -9,7 +9,7 @@
       </el-col>
     </el-row>
     <el-collapse v-model="activeNames">
-      <el-collapse-item v-for="(configure,index) in model.configures" :title="configure.baseUrl" :name="`${index}`">
+      <el-collapse-item v-for="(configure,index) in model.configures" :title="`环境${index+1}`" :name="`${index}`">
         <el-row :gutter="0">
           <el-col :span="24">
             <el-form-item label="baseUrl">
