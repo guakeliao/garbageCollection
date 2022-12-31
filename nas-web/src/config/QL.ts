@@ -118,7 +118,6 @@ let getEnvs = async () => {
 };
 
 let updateEnv = async (cookie: string, remarks: string | null = null, eid: string | null = null) => {
-    debugger
     let [env, index] = await searchEnv(cookie);
     let configure = configures[index === -1 ? 0 : index];
     if (index === -1) {
@@ -129,7 +128,6 @@ let updateEnv = async (cookie: string, remarks: string | null = null, eid: strin
     }
 };
 const searchEnv = async (cookie: string) => {
-    debugger
     let envs = await getEnvs() as [[any]]
     let index: number, env: any;
     index = envs.findIndex(subEnvs => {
