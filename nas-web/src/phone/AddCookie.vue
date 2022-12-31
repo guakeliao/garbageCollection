@@ -8,31 +8,31 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <el-divider border-style="dashed"/>
-    <div v-for="(configure,index) in model.configures" inert>
-      <el-row :gutter="0">
-        <el-col :span="24">
-          <el-form-item label="baseUrl">
-            <el-input v-model="configure.baseUrl" placeholder="Please input"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="client_id">
-            <el-input v-model="configure.client_id" placeholder="Please input"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="client_secret">
-            <el-input v-model="configure.client_secret" placeholder="Please input"></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-button @click="saveConfigure(index)">保存</el-button>
-          <el-button @click="delConfigure(index)">删除</el-button>
-        </el-col>
-      </el-row>
-      <el-divider border-style="dashed"/>
-    </div>
+    <el-collapse v-model="activeNames">
+      <el-collapse-item v-for="(configure,index) in model.configures" :title="configure.baseUrl" :name="`${index}`">
+        <el-row :gutter="0">
+          <el-col :span="24">
+            <el-form-item label="baseUrl">
+              <el-input v-model="configure.baseUrl" placeholder="Please input" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="client_id">
+              <el-input v-model="configure.client_id" placeholder="Please input" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="client_secret">
+              <el-input v-model="configure.client_secret" placeholder="Please input" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-button @click="saveConfigure(index)" disabled>保存</el-button>
+            <el-button @click="delConfigure(index)" disabled>删除</el-button>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+    </el-collapse>
     <el-row :gutter="20">
       <el-col :span="24">
         <el-form-item label="cookie提交">
@@ -65,11 +65,12 @@
 </template>
 
 <script setup lang="ts">
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 import {getConfigures, searchEnv, updateEnv} from "@/config/QL"
 import _ from "lodash"
 import {ElMessage} from "element-plus";
 
+const activeNames = ref([])
 const model = reactive({cookie: null, env: {value: null as string | null, remarks: null as string | null, id: null as string | null}, configures: [] as any[]})
 const addConfigure = () => {
   model.configures.push({
