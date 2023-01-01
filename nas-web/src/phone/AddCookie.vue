@@ -40,52 +40,48 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-form-item label="备注">
-          <el-input v-model="model.env.remarks" placeholder="Please input"></el-input>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-form-item label="cookie">
-          <el-input v-model="model.env.value" placeholder="Please input" disabled></el-input>
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row :gutter="20">
-      <el-col :span="24">
-        <el-form-item label="操作">
-          <el-button @click="submitClick">提交</el-button>
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <div v-for="(env,index) in model.envs">
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="cookie">
+            <el-input v-model="env.value" placeholder="Please input" disabled></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="备注">
+            <el-input v-model="env.remarks" placeholder="Please input"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-button @click="submitClick(index)">{{ index + 1 }}提交</el-button>
+        </el-col>
+      </el-row>
+      <el-divider border-style="dashed"/>
+    </div>
   </el-form>
 </template>
 
 <script setup lang="ts">
 import {reactive, ref, watch} from "vue";
-import {getConfigures, searchEnv, updateEnv} from "@/config/QL"
-import _ from "lodash"
-import {ElMessage} from "element-plus";
 
-const props = defineProps({"configures": {type: Array, default: [] as any[]}, "env": {type: Object, default: {value: null as string | null, remarks: null as string | null, id: null as string | null}}})
+const props = defineProps({"configures": {type: Array, default: [] as any[]}, "envs": {type: Array, default: [] as any[]}})
 const emits = defineEmits(["submitClick", "searchClick", "addConfigureClick"])
-
+const model = reactive({cookie: null, envs: [] as any[], configures: [] as any[]})
 const activeNames = ref([])
-const model = reactive({cookie: null, env: {value: null as string | null, remarks: null as string | null, id: null as string | null}, configures: [] as any[]})
 
 watch(() => props.configures, (nowValue, oldValue) => {
+  model.configures.splice(0, model.configures.length);
   if (nowValue) {
-    model.configures.splice(0, model.configures.length);
+    model.configures.push(...nowValue)
   }
-  model.configures.push(...nowValue)
 }, {immediate: true, deep: true})
-watch(props.env, (nowValue, oldValue) => {
-  model.env.value = nowValue?.value
-  model.env.remarks = nowValue?.remarks
-  model.env.id = nowValue?.id
+watch(() => props.envs, (nowValue, oldValue) => {
+  model.envs.splice(0, model.envs.length);
+  if (nowValue) {
+    model.envs.push(...nowValue)
+  }
 }, {immediate: true, deep: true})
 
 const addConfigureClick = () => {
@@ -97,8 +93,9 @@ const saveConfigureClick = (index: number) => {
 
 }
 
-const submitClick = () => {
-  emits("submitClick", model.cookie, model.env.remarks, model.env.id)
+const submitClick = (index: number) => {
+  let env = model.envs[index];
+  emits("submitClick", env)
 }
 const searchClick = () => {
   emits("searchClick", model.cookie)

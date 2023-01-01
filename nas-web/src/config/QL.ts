@@ -107,7 +107,10 @@ let getEnvs = async () => {
                     t: Date.now(),
                 }
             })
-            envs.push(body.data);
+            for (let env of body.data as any []) {
+                env.configure = configure
+                envs.push(env);
+            }
         } catch (e) {
             // @ts-ignore
             console.error(e.message)
@@ -117,37 +120,31 @@ let getEnvs = async () => {
     return envs
 };
 
-let updateEnv = async (cookie: string, remarks: string | null = null, eid: string | null = null) => {
-    let [env, index] = await searchEnv(cookie);
-    let configure = configures[index === -1 ? 0 : index];
-    if (index === -1) {
-        return await addCk(configure.baseUrl, configure.token, cookie, remarks ?? "新增账号");
+let updateEnv = async (env: any) => {
+    let configure = env.configure
+    if (configure == null) {
+        configure = configures[0]
+        return await addCk(configure.baseUrl, configure.token, env.value, env.remarks ?? "新增账号");
     } else {
-        await updateCk(configure.baseUrl, configure.token, cookie, eid as string, remarks as string);
+        await updateCk(configure.baseUrl, configure.token, env.value, env.id, env.remarks);
         return await enableCk(configure.baseUrl, configure.token, env.id)
     }
 };
-const searchEnv = async (cookie: string) => {
-    let envs = await getEnvs() as [[any]]
-    let index: number, env: any;
-    index = envs.findIndex(subEnvs => {
-        return subEnvs.some(aa => {
-            const envPins = (aa.value.match(/(pt_key|pt_pin)=.+?;/g) ?? []) as any[];
-            const ckPins = (cookie.match(/(pt_key|pt_pin)=.+?;/g) ?? []) as any[];
-            if (envPins.length === 2 && ckPins.length === 2) {
-                if (envPins[1] === ckPins[1]) {
-                    env = aa
-                    return true
-                }
-                return false
-            }
-            return false
+const searchEnvs = async (cookies: [string]) => {
+    let sEnvs = [] as any[]
+    let envs = await getEnvs()
+    for (let cookie of cookies) {
+        const ckPins = (cookie.match(/(pt_pin)=.+?;/g) ?? []) as any[];
+        let env = envs.find(e => {
+            const ePins = (e.value.match(/(pt_pin)=.+?;/g) ?? []) as any[];
+            return ePins[0] === ckPins[0]
         })
-    })
-    if (index === -1) {
-        return [null, index]
+        if (env == null) {
+            env = {"value": cookie, "remarks": "新增账号"}
+        }
+        sEnvs.push(env)
     }
-    return [env, index];
+    return sEnvs;
 }
 let getConfigures = async () => {
     let arr = new Array<any>()
@@ -165,4 +162,4 @@ const delConfigure = async (configure: any) => {
 const saveConfigure = (configure: any) => {
 
 }
-export {getConfigures, updateEnv, searchEnv}
+export {getConfigures, updateEnv, searchEnvs}
