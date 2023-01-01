@@ -142,6 +142,7 @@ const searchEnvs = async (cookies: [string]) => {
         if (env == null) {
             env = {"value": cookie, "remarks": "新增账号"}
         }
+        env.needUpdate = env.value !== cookie
         sEnvs.push(env)
     }
     return sEnvs;

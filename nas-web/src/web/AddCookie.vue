@@ -53,7 +53,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="2">
-          <el-button @click="submitClick(index)">{{ index + 1 }}提交</el-button>
+          <el-button @click="submitClick(index)" :disabled="env.needUpdate">{{ index + 1 }}提交</el-button>
         </el-col>
       </el-row>
     </div>
