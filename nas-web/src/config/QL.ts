@@ -140,9 +140,10 @@ const searchEnvs = async (cookies: [string]) => {
             return ePins[0] === ckPins[0]
         })
         if (env == null) {
-            env = {"value": cookie, "remarks": "新增账号"}
+            env = {"value": cookie, "remarks": "新增账号", "needUpdate": true}
+        } else {
+            env.needUpdate = env.value !== cookie
         }
-        env.needUpdate = env.value !== cookie
         sEnvs.push(env)
     }
     return sEnvs;

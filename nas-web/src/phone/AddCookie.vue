@@ -55,7 +55,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="24">
-          <el-button @click="submitClick(index)" :disabled="env.needUpdate">{{ index + 1 }}提交</el-button>
+          <el-button @click="submitClick(index)" :disabled="!env.needUpdate">{{ index + 1 }}提交</el-button>
         </el-col>
       </el-row>
       <el-divider border-style="dashed"/>
@@ -95,7 +95,10 @@ const saveConfigureClick = (index: number) => {
 
 const submitClick = (index: number) => {
   let env = model.envs[index];
-  emits("submitClick", env)
+  emits("submitClick", env, (success: boolean) => {
+    env.needUpdate = !success
+
+  })
 }
 const searchClick = () => {
   emits("searchClick", model.cookie)

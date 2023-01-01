@@ -15,11 +15,13 @@ console.log(process.env.NODE_ENV)
 const configures = reactive([] as any[])
 const envs = reactive([] as any[])
 
-const submitClick = _.debounce(async (env: any) => {
+const submitClick = _.debounce(async (env: any, callBack: Function) => {
   if (env.value) {
     await updateEnv(env);
+    callBack(true)
     ElMessage.success('更新成功')
   } else {
+    callBack(false)
     ElMessage.error('提供的CK错误')
   }
 }, 500)
