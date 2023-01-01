@@ -139,11 +139,16 @@ const searchEnvs = async (cookies: [string]) => {
             const ePins = (e.value.match(/(pt_pin)=.+?;/g) ?? []) as any[];
             return ePins[0] === ckPins[0]
         })
+        let needUpdate = false
         if (env == null) {
-            env = {"value": cookie, "remarks": "新增账号", "needUpdate": true}
+            env = {"value": cookie, "remarks": "新增账号"}
+            needUpdate = true
         } else {
-            env.needUpdate = env.value !== cookie
+            const pt_keys0 = (cookie.match(/(pt_key)=.+?;/g) ?? []) as any[];
+            const pt_keys1 = (env.value.match(/(pt_key)=.+?;/g) ?? []) as any[];
+            needUpdate = pt_keys0[0] === pt_keys1[0]
         }
+        env.needUpdate = needUpdate
         sEnvs.push(env)
     }
     return sEnvs;
