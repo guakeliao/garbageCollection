@@ -36,7 +36,7 @@
     <el-row :gutter="20">
       <el-col :span="24">
         <el-form-item label="cookie提交">
-          <el-input v-model="model.cookie" @input="searchClick" :rows="10" type="textarea" placeholder="Please input" style="width: 100%"/>
+          <el-input v-model="model.value" @input="searchClick" :rows="10" type="textarea" placeholder="Please input" style="width: 100%"/>
         </el-form-item>
       </el-col>
     </el-row>
@@ -65,7 +65,7 @@ import {reactive, watch} from "vue";
 
 const props = defineProps({"configures": {type: Array, default: [] as any[]}, "envs": {type: Array, default: [] as any[]}})
 const emits = defineEmits(["submitClick", "searchClick", "addConfigureClick"])
-const model = reactive({cookie: null, envs: [] as any[], configures: [] as any[]})
+const model = reactive({value: null, envs: [] as any[], configures: [] as any[]})
 
 watch(() => props.configures, (nowValue, oldValue) => {
   model.configures.splice(0, model.configures.length);
@@ -93,11 +93,10 @@ const submitClick = (index: number) => {
   let env = model.envs[index];
   emits("submitClick", env, (success: boolean) => {
     env.needUpdate = !success
-
   })
 }
 const searchClick = () => {
-  emits("searchClick", model.cookie)
+  emits("searchClick", model.value)
 }
 
 </script>

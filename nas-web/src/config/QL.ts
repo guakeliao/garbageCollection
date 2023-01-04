@@ -146,8 +146,9 @@ const searchEnvs = async (cookies: [string]) => {
         } else {
             const pt_keys0 = (cookie.match(/(pt_key)=.+?;/g) ?? []) as any[];
             const pt_keys1 = (env.value.match(/(pt_key)=.+?;/g) ?? []) as any[];
-            needUpdate = pt_keys0[0] === pt_keys1[0]
+            needUpdate = pt_keys0[0] !== pt_keys1[0]
         }
+        env.value = cookie
         env.needUpdate = needUpdate
         sEnvs.push(env)
     }
