@@ -2,8 +2,8 @@
 
 import AddCookieWeb from "./web/AddCookie.vue";
 import AddCookiePhone from "./phone/AddCookie.vue";
-import {reactive, ref} from "vue";
-import {getConfigures, searchEnvs, updateEnv} from "@/config/QL";
+import {reactive} from "vue";
+import {getConfigures, searchDisableEnvs, searchEnvs, updateEnv} from "@/config/QL";
 import {ElMessage} from "element-plus";
 import _ from "lodash";
 
@@ -14,6 +14,7 @@ console.log(process.env.NODE_ENV)
 
 const configures = reactive([] as any[])
 const envs = reactive([] as any[])
+const disableEnvs = reactive([] as any[])
 
 const submitClick = _.debounce(async (env: any, callBack: Function) => {
   if (env.value) {
@@ -34,16 +35,17 @@ const searchClick = _.debounce(async (value: string) => {
 }, 500)
 
 getConfigures().then(res => configures.push(...res));
+searchDisableEnvs().then(res => disableEnvs.push(...res))
 
 </script>
 
 <template>
   <div class="container">
     <BrowserView style="width: 90%;">
-      <AddCookieWeb :configures="configures" :envs="envs" @submitClick="submitClick" @searchClick="searchClick"></AddCookieWeb>
+      <AddCookieWeb :configures="configures" :envs="envs" :disableEnvs="disableEnvs" @submitClick="submitClick" @searchClick="searchClick"></AddCookieWeb>
     </BrowserView>
     <MobileView style="width: 90%;">
-      <AddCookiePhone :configures="configures" :envs="envs" @submitClick="submitClick" @searchClick="searchClick"></AddCookiePhone>
+      <AddCookiePhone :configures="configures" :envs="envs" :disableEnvs="disableEnvs" @submitClick="submitClick" @searchClick="searchClick"></AddCookiePhone>
     </MobileView>
   </div>
 </template>

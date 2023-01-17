@@ -1,8 +1,6 @@
 // @ts-ignore
 import axios from "axios";
 
-let configures = [] as any[];
-
 const api = axios.create({method: "post", timeout: 10000});
 // 添加响应拦截器
 api.interceptors.response.use(response => {
@@ -91,7 +89,7 @@ let enableCk = async (url: string, token: string, eid: string) => {
 };
 let getEnvs = async () => {
     let envs = [] as any[]
-    for (let configure of configures) {
+    for (let configure of await getConfigures()) {
         let token = await getToken(configure);
         let url = configure.baseUrl;
         try {
@@ -123,7 +121,7 @@ let getEnvs = async () => {
 let updateEnv = async (env: any) => {
     let configure = env.configure
     if (configure == null) {
-        configure = configures[0]
+        configure = await getConfigures()[0]
         return await addCk(configure.baseUrl, configure.token, env.value, env.remarks ?? "新增账号");
     } else {
         await updateCk(configure.baseUrl, configure.token, env.value, env.id, env.remarks);
@@ -154,12 +152,25 @@ const searchEnvs = async (cookies: [string]) => {
     }
     return sEnvs;
 }
+
+const searchDisableEnvs = async () => {
+    let sEnvs = [] as any[]
+    let envs = await getEnvs()
+    console.log(envs)
+    envs.forEach(e => {
+        console.log(e.status)
+        if (e.status != '0') {
+            sEnvs.push(e);
+        }
+    })
+    return sEnvs;
+}
+
 let getConfigures = async () => {
     let arr = new Array<any>()
     let res = await axios.get('/configure.json')
     let list: Array<any> = res.data;
     arr.push(...list)
-    configures = arr;
     return arr
 }
 //TODO:
@@ -170,4 +181,4 @@ const delConfigure = async (configure: any) => {
 const saveConfigure = (configure: any) => {
 
 }
-export {getConfigures, updateEnv, searchEnvs}
+export {getConfigures, updateEnv, searchEnvs, searchDisableEnvs}

@@ -8,31 +8,38 @@
         </el-form-item>
       </el-col>
     </el-row>
-    <el-divider border-style="dashed"/>
-    <div v-for="(configure,index) in model.configures">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="baseUrl">
-            <el-input v-model="configure.baseUrl" placeholder="Please input" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="client_id">
-            <el-input v-model="configure.client_id" placeholder="Please input" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="client_secret">
-            <el-input v-model="configure.client_secret" placeholder="Please input" disabled></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="4">
-          <el-button @click="saveConfigureClick(index)" disabled>保存</el-button>
-          <el-button @click="delConfigureClick(index)" disabled>删除</el-button>
-        </el-col>
-      </el-row>
-      <el-divider border-style="dashed"/>
-    </div>
+    <el-collapse v-model="activeNames">
+      <el-collapse-item v-for="(configure,index) in model.configures" :title="`环境${index+1}`" :name="`${index}`">
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="baseUrl">
+              <el-input v-model="configure.baseUrl" placeholder="Please input" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="client_id">
+              <el-input v-model="configure.client_id" placeholder="Please input" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="client_secret">
+              <el-input v-model="configure.client_secret" placeholder="Please input" disabled></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4">
+            <el-button @click="saveConfigureClick(index)" disabled>保存</el-button>
+            <el-button @click="delConfigureClick(index)" disabled>删除</el-button>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+      <el-collapse-item :title="`过期账号`" :name="`${model.configures.length}`">
+        <el-row :gutter="4">
+          <el-col :span="4" v-for="e in disableEnvs">
+            <el-input v-model="e.remarks" placeholder="Please input" disabled></el-input>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
+    </el-collapse>
     <el-row :gutter="20">
       <el-col :span="24">
         <el-form-item label="cookie提交">
@@ -61,11 +68,12 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, watch} from "vue";
+import {reactive, ref, watch} from "vue";
 
-const props = defineProps({"configures": {type: Array, default: [] as any[]}, "envs": {type: Array, default: [] as any[]}})
+const props = defineProps({"configures": {type: Array, default: [] as any[]}, "envs": {type: Array, default: [] as any[]}, "disableEnvs": {type: Array, default: [] as any[]}})
 const emits = defineEmits(["submitClick", "searchClick", "addConfigureClick"])
 const model = reactive({value: null, envs: [] as any[], configures: [] as any[]})
+const activeNames = ref([])
 
 watch(() => props.configures, (nowValue, oldValue) => {
   model.configures.splice(0, model.configures.length);

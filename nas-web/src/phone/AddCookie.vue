@@ -32,6 +32,13 @@
           </el-col>
         </el-row>
       </el-collapse-item>
+      <el-collapse-item :title="`过期账号`" :name="`${model.configures.length}`">
+        <el-row :gutter="4">
+          <el-col :span="24" v-for="e in disableEnvs">
+            <el-input v-model="e.remarks" placeholder="Please input" disabled></el-input>
+          </el-col>
+        </el-row>
+      </el-collapse-item>
     </el-collapse>
     <el-row :gutter="20">
       <el-col :span="24">
@@ -66,7 +73,7 @@
 <script setup lang="ts">
 import {reactive, ref, watch} from "vue";
 
-const props = defineProps({"configures": {type: Array, default: [] as any[]}, "envs": {type: Array, default: [] as any[]}})
+const props = defineProps({"configures": {type: Array, default: [] as any[]}, "envs": {type: Array, default: [] as any[]}, "disableEnvs": {type: Array, default: [] as any[]}})
 const emits = defineEmits(["submitClick", "searchClick", "addConfigureClick"])
 const model = reactive({value: null, envs: [] as any[], configures: [] as any[]})
 const activeNames = ref([])
@@ -90,7 +97,6 @@ const addConfigureClick = () => {
 const delConfigureClick = (index: number) => {
 }
 const saveConfigureClick = (index: number) => {
-
 }
 
 const submitClick = (index: number) => {
