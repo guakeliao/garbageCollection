@@ -121,7 +121,7 @@ let getEnvs = async () => {
 let updateEnv = async (env: any) => {
     let configure = env.configure
     if (configure == null) {
-        configure = await getConfigures()[0]
+        configure = (await getConfigures())[0]
         return await addCk(configure.baseUrl, configure.token, env.value, env.remarks ?? "新增账号");
     } else {
         await updateCk(configure.baseUrl, configure.token, env.value, env.id, env.remarks);
@@ -170,6 +170,12 @@ let getConfigures = async () => {
     let arr = new Array<any>()
     let res = await axios.get('/configure.json')
     let list: Array<any> = res.data;
+    for (let configure of list) {
+        configure.baseUrl = `${window.location.protocol}//${window.location.hostname}:${configure.port}`
+        if (process.env.NODE_ENV === 'development') {
+            configure.baseUrl = `http://192.168.31.253:${configure.port}`
+        }
+    }
     arr.push(...list)
     return arr
 }
