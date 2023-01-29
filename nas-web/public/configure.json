@@ -1,14 +1,12 @@
 [
   {
-    "baseUrl": "",
-    "port": "5801",
+    "baseUrl": "http://192.168.31.253:5801",
     "client_id": "-cpU5VyR2IlQ",
     "client_secret": "F1-QJ0eMrqwlGZrBi3L5Jj3Q",
     "token": ""
   },
   {
-    "baseUrl": "",
-    "port": "5802",
+    "baseUrl": "http://192.168.31.253:5802",
     "client_id": "b2_v_Zz0kMZH",
     "client_secret": "nDkYnHt82Y-79vQP3-v-Xhk-",
     "token": ""

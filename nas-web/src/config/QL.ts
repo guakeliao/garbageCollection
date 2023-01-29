@@ -22,68 +22,58 @@ let getTokenCache = (configure: any) => {
 let getToken = async (configure: any) => {
     let token = getTokenCache(configure);
     if (token == null) {
-        try {
-            let res = await api({url: `${configure.baseUrl}/open/auth/token?client_id=${configure.client_id}&client_secret=${configure.client_secret}`, method: "get"}) as any;
-            token = res.data.token;
-        } catch (e) {
-            // @ts-ignore
-            console.error(e.message)
-            throw e
-        }
+        const res = await api({
+            method: 'post',
+            url: `/api/getToken`,
+            data: {
+                url: configure.baseUrl + '/open/auth/token',
+                client_id: configure.client_id,
+                client_secret: configure.client_secret,
+            }
+        })
+        token = res.data.token;
     }
     configure.token = token;
     return token
 }
 
-let addCk = async (url: string, token: string, cookie: string, remarks: string = '新增账号') => {
+let addCk = async (baseUrl: string, token: string, cookie: string, remarks: string = '新增账号') => {
     const body = await api({
         method: 'post',
-        url: `${url}/open/envs`,
-        params: {t: Date.now()},
-        data: [{
-            name: 'JD_COOKIE',
-            value: cookie,
-            remarks,
-        }],
-        headers: {
-            Accept: 'application/json',
-            authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json;charset=UTF-8',
+        url: `/api/addCk`,
+        data: {
+            url: baseUrl + "/open/envs",
+            token: token,
+            cookie: cookie,
+            remarks: remarks
         },
     })
     return body;
 };
-let updateCk = async (url: string, token: string, cookie: string, eid: string, remarks: string) => {
+let updateCk = async (baseUrl: string, token: string, cookie: string, eid: string, remarks: string) => {
     const body = await api({
-        method: 'put',
-        url: `${url}/open/envs`,
-        params: {t: Date.now()},
+        method: 'post',
+        url: `/api/updateCk`,
         data: {
-            name: 'JD_COOKIE',
-            value: cookie,
-            id: eid,
+            url: baseUrl + "/open/envs",
+            token: token,
+            cookie: cookie,
             remarks: remarks,
-        },
-        headers: {
-            Accept: 'application/json',
-            authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json;charset=UTF-8',
-        },
+            eid: eid
+        }
     });
     return body
 }
 
-let enableCk = async (url: string, token: string, eid: string) => {
+let enableCk = async (baseUrl: string, token: string, eid: string) => {
     const body = await api({
-        method: 'put',
-        url: `${url}/open/envs/enable`,
-        params: {t: Date.now()},
-        data: JSON.stringify([eid]),
-        headers: {
-            Accept: 'application/json',
-            authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json;charset=UTF-8',
-        },
+        method: 'post',
+        url: `/api/enableCk`,
+        data: {
+            url: baseUrl + "/open/envs/enable",
+            token: token,
+            eid: eid
+        }
     });
     return body;
 };
@@ -91,18 +81,13 @@ let getEnvs = async () => {
     let envs = [] as any[]
     for (let configure of await getConfigures()) {
         let token = await getToken(configure);
-        let url = configure.baseUrl;
         try {
             const body = await api({
-                url: `${url}/open/envs`,
-                method: "get",
-                headers: {
-                    Accept: 'application/json',
-                    authorization: `Bearer ${token}`,
-                },
-                params: {
-                    searchValue: 'JD_COOKIE',
-                    t: Date.now(),
+                url: `/api/getEnvs`,
+                method: "post",
+                data: {
+                    url: configure.baseUrl + "/open/envs",
+                    token: token
                 }
             })
             for (let env of body.data as any []) {
@@ -170,12 +155,6 @@ let getConfigures = async () => {
     let arr = new Array<any>()
     let res = await axios.get('/configure.json')
     let list: Array<any> = res.data;
-    for (let configure of list) {
-        configure.baseUrl = `${window.location.protocol}//${window.location.hostname}:${configure.port}`
-        if (process.env.NODE_ENV === 'development') {
-            configure.baseUrl = `http://192.168.31.253:${configure.port}`
-        }
-    }
     arr.push(...list)
     return arr
 }

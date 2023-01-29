@@ -1,5 +1,8 @@
 package com.garbage;
 
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -58,7 +61,7 @@ public class Controller {
         String url = (String) requestJSON.get("url");
         String token = (String) requestJSON.get("token");
         String cookie = (String) requestJSON.get("cookie");
-        String eid = (String) requestJSON.get("eid");
+        String eid = Convert.toStr(requestJSON.get("eid"));
         String remarks = (String) requestJSON.get("remarks");
         return qlService.updateCk(url, token, cookie, eid, remarks);
     }
@@ -69,7 +72,7 @@ public class Controller {
         JSONObject requestJSON = new JSONObject(requestString);
         String url = (String) requestJSON.get("url");
         String token = (String) requestJSON.get("token");
-        String eid = (String) requestJSON.get("eid");
+        String eid = Convert.toStr(requestJSON.get("eid"));
         return qlService.enableCk(url, token, eid);
     }
 }
