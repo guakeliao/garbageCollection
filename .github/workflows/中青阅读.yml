@@ -3,7 +3,7 @@ name: 中青阅读
 on:
   workflow_dispatch:
   schedule:
-     - cron: '10 6,11,16,21 * * *'
+     - cron: '10 3/8-21 * * *'
 jobs:
   build:
     runs-on: ubuntu-latest    
