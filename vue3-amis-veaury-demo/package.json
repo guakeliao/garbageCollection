@@ -1,0 +1,25 @@
+{
+  "name": "vue3-amis-veaury-demo",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "amis": "^6.12.0",
+    "amis-editor": "^6.12.0",
+    "amis-editor-core": "^6.12.0",
+    "amis-ui": "^6.12.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "veaury": "^2.6.2",
+    "vue": "^3.4.15"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.5.2",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "typescript": "^5.4.5",
+    "vite": "^6.2.8"
+  }
+}
