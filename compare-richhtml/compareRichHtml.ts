@@ -82,7 +82,11 @@ function buildLCSMatrix(a: Block[], b: Block[]) {
 
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      if (a[i - 1].text === b[j - 1].text) {
+      // 匹配条件：text 相同，且如果 text 为空则 html 也必须相同
+      const isMatch = a[i - 1].text === b[j - 1].text &&
+                      (a[i - 1].text !== '' || a[i - 1].html === b[j - 1].html);
+
+      if (isMatch) {
         dp[i][j] = dp[i - 1][j - 1] + 1;
       } else {
         dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
@@ -104,24 +108,29 @@ function diffBlocksByLCS(
   let j = newBlocks.length;
 
   while (i > 0 && j > 0) {
-    if (oldBlocks[i - 1].text === newBlocks[j - 1].text) {
+    const oldBlockMatch = oldBlocks[i - 1];
+    const newBlockMatch = newBlocks[j - 1];
+    const isMatch = oldBlockMatch.text === newBlockMatch.text &&
+                    (oldBlockMatch.text !== '' || oldBlockMatch.html === newBlockMatch.html);
+
+    if (isMatch) {
       diffs.unshift({
         type: 'equal',
-        oldBlock: oldBlocks[i - 1],
-        newBlock: newBlocks[j - 1],
+        oldBlock: oldBlockMatch,
+        newBlock: newBlockMatch,
       });
       i--;
       j--;
     } else if (dp[i - 1][j] >= dp[i][j - 1]) {
       diffs.unshift({
         type: 'delete',
-        oldBlock: oldBlocks[i - 1],
+        oldBlock: oldBlockMatch,
       });
       i--;
     } else {
       diffs.unshift({
         type: 'add',
-        newBlock: newBlocks[j - 1],
+        newBlock: newBlockMatch,
       });
       j--;
     }
@@ -151,14 +160,19 @@ function buildNewHTML(diffs: BlockDiff[]): string {
 
   diffs.forEach(d => {
     if (d.type === 'equal' && d.newBlock) {
-      container.innerHTML += d.newBlock.html;
+      const wrap = document.createElement('div');
+      wrap.innerHTML = d.newBlock.html;
+      const el = wrap.firstElementChild as HTMLElement;
+      container.appendChild(el);
     }
 
     if (d.type === 'add' && d.newBlock) {
       const wrap = document.createElement('div');
       wrap.innerHTML = d.newBlock.html;
       const el = wrap.firstElementChild as HTMLElement;
-      el.style.background = '#d4edda';
+      // 添加高亮背景，保留原有样式
+      const existingStyle = el.getAttribute('style') || '';
+      el.setAttribute('style', existingStyle + '; background-color: #d4edda;');
       container.appendChild(el);
     }
   });
@@ -170,15 +184,19 @@ function buildOldHTML(diffs: BlockDiff[]): string {
 
   diffs.forEach(d => {
     if (d.type === 'equal' && d.oldBlock) {
-      container.innerHTML += d.oldBlock.html;
+      const wrap = document.createElement('div');
+      wrap.innerHTML = d.oldBlock.html;
+      const el = wrap.firstElementChild as HTMLElement;
+      container.appendChild(el);
     }
 
     if (d.type === 'delete' && d.oldBlock) {
       const wrap = document.createElement('div');
       wrap.innerHTML = d.oldBlock.html;
       const el = wrap.firstElementChild as HTMLElement;
-      el.style.background = '#f8d7da';
-      el.style.textDecoration = 'line-through';
+      // 添加删除样式，保留原有样式
+      const existingStyle = el.getAttribute('style') || '';
+      el.setAttribute('style', existingStyle + '; background-color: #f8d7da; text-decoration: line-through;');
       container.appendChild(el);
     }
   });

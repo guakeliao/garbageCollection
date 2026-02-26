@@ -23,6 +23,16 @@ const oldHTML = `
 <li>1123</li>
 <li>1123</li>
 <img src="old.jpg" />
+<table>
+    <tr>
+        <td>第一行第一列</td>
+        <td>第一行第二列</td>
+    </tr>
+    <tr>
+        <td>第二行第一列</td>
+
+    </tr>
+</table>
 `;
 const newHTML = `
 <div>第三段</div>
@@ -46,8 +56,10 @@ const newHTML = `
 `;
 
 const result = compareRichHTML(oldHTML, newHTML);
-console.log('旧 HTML：', result.oldHTML);
-console.log('新 HTML：', result.newHTML);
+console.log('旧 HTML：', oldHTML);
+console.log('旧 HTML1：', result.oldHTML);
+console.log('新 HTML：', newHTML);
+console.log('新 HTML1：', result.newHTML);
 
 const c1 = document.querySelector('.c1');
 const c2 = document.querySelector('.c2');
