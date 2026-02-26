@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+
+
+<body>
+<script type="module">
+// npx tsc compareRichHtml.ts --module ES2020 --target ES2020 --lib ES2020,DOM
+
+import {compareRichHTML} from './compareRichHtml.js';
+
+// test
+const oldHTML = `
+
+<div><span>第一段</span></div>
+<div>第二段</div>
+<div style="height: 10px;width: 2px"></div>
+<div>第三段</div>
+
+<li>1123</li>
+<li>1123</li>
+<img src="old.jpg" />
+`;
+const newHTML = `
+<div>第三段</div>
+<div>第一段</div>
+<div>第二段</div>
+<div style="height: 10px;width: 2px"></div>
+<img src="new.jpg" />
+<li>1123</li>
+<li>1123</li>
+<li>1123</li>
+<table>
+    <tr>
+        <td>第一行第一列</td>
+        <td>第一行第二列</td>
+    </tr>
+    <tr>
+        <td>第二行第一列</td>
+        <td>第二行第二列</td>
+    </tr>
+</table>
+`;
+
+const result = compareRichHTML(oldHTML, newHTML);
+console.log('旧 HTML：', result.oldHTML);
+console.log('新 HTML：', result.newHTML);
+
+const c1 = document.querySelector('.c1');
+const c2 = document.querySelector('.c2');
+const c3 = document.querySelector('.c3');
+const c4 = document.querySelector('.c4');
+
+c1.innerHTML = oldHTML;
+c2.innerHTML = newHTML;
+c3.innerHTML = result.oldHTML;
+c4.innerHTML = result.newHTML;
+</script>
+
+<div class="container">
+    <div class="c1"></div>
+    <div class="c2"></div>
+    <div class="c3"></div>
+    <div class="c4"></div>
+</div>
+
+</body>
+<style>
+.container {
+    width: 100%;
+    height: 700px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+.c1, .c2, .c3, .c4 {
+    flex: 1;
+    border: 1px solid #ccc;
+    font-size: 18px;
+}
+</style>
+</html>

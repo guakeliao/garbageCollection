@@ -62,12 +62,11 @@ function parseBlocks(html: string): Block[] {
       .replace(/\s+/g, ' ')
       .trim();
 
-    if (text) {
-      blocks.push({
-        text,
-        html: el.outerHTML,
-      });
-    }
+    // 保留所有元素，包括空元素
+    blocks.push({
+      text,
+      html: el.outerHTML,
+    });
   });
 
   return blocks;
@@ -186,8 +185,5 @@ function buildOldHTML(diffs: BlockDiff[]): string {
 
   return container.innerHTML;
 }
-
-//
-
 
 
